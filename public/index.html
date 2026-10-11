@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Estimativa não oficial de pontos da Season 0 da TxFlow.">
+<meta property="og:title" content="Calculadora de Pontos TxFlow · Season 0">
+<meta property="og:description" content="Estimativa não oficial. Coloque seu volume e veja quantos pontos você deve receber.">
+<meta property="og:image" content="/api/og">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/api/og">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>TxFlow Points Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IM+Fell+English&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: wide two-column console — big inputs + result left, share card (X thumbnail) right; stacks on phones. Black + lime, square corners, flat. */
+:root{
+  color-scheme:dark;
+  --bg:#050605;
+  --panel:#0b0d0b;
+  --line:#1f281d;
+  --fg:#f2f5ef;
+  --muted:#88927f;
+  --lime:#7dff6b;
+  --serif:"IM Fell English",Georgia,"Times New Roman",serif;
+  --lime-dim:#1c2913;
+  --ink:#071003;
+  --sans:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.5;min-height:100vh}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:clamp(16px,4vw,48px);padding-block:40px 48px;display:flex;flex-direction:column;gap:36px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:18px}
+.top a{color:var(--lime);text-decoration:none}
+.top a:hover{text-decoration:underline}
+.tag{border:1px solid var(--lime);color:var(--lime);padding:4px 10px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+h1{font-weight:800;font-size:clamp(44px,7vw,92px);line-height:.95;letter-spacing:-.04em;margin:0;text-wrap:balance}
+h1 span{color:var(--lime);font-family:var(--serif);font-weight:400;letter-spacing:-.02em}
+.ref h2 em,.soon h2 em{font-family:var(--serif);font-style:normal;font-weight:400}
+.lede{color:var(--muted);margin:0;max-width:40ch;font-size:18px}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+@media (max-width:960px){.grid{grid-template-columns:1fr}}
+.box{border:1px solid var(--line);background:var(--panel);min-width:0}
+.inputs{display:grid;grid-template-columns:1.6fr 1fr}
+@media (max-width:560px){.inputs{grid-template-columns:1fr}}
+.row{padding:26px 28px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:12px;min-width:0}
+.inputs .row:first-child{border-right:1px solid var(--line)}
+@media (max-width:560px){.inputs .row:first-child{border-right:0}}
+label,.lbl{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.in{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--line);padding-bottom:8px}
+.in:focus-within{border-color:var(--lime)}
+.in span{font-family:var(--mono);font-size:34px;color:var(--muted)}
+.in input{flex:1;min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--fg);font-family:var(--mono);font-size:clamp(32px,4vw,44px);font-weight:700;padding:0}
+.in em{font-style:normal;font-family:var(--mono);font-size:13px;letter-spacing:.14em;color:var(--muted)}
+.result{padding:36px 28px 32px;display:flex;flex-direction:column;gap:8px;background:var(--lime);color:var(--ink)}
+.result .lbl{color:#2c4512}
+.pts{font-weight:800;font-size:clamp(64px,10vw,128px);letter-spacing:-.045em;line-height:.95;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sub{font-family:var(--mono);font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr)}
+.stats div{padding:20px 28px;border-right:1px solid var(--line);min-width:0}
+.stats div:last-child{border-right:0}
+.stats small{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stats b{font-family:var(--mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.stats{grid-template-columns:1fr}.stats div{border-right:0;border-bottom:1px solid var(--line)}.stats div:last-child{border-bottom:0}}
+.warn{padding:16px 28px;font-size:14px;color:var(--muted);border-top:1px solid var(--line)}
+.warn b{color:var(--fg);display:block;margin-bottom:6px}
+.warn ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.disclaimer{padding:18px 28px;background:var(--lime-dim);border-bottom:1px solid var(--line);font-size:15px;color:var(--fg)}
+.disclaimer b{color:var(--lime)}
+.side{display:flex;flex-direction:column;gap:20px;min-width:0}
+.share{padding:24px;display:flex;flex-direction:column;gap:16px}
+.share img{width:100%;height:auto;display:block;border:1px solid var(--line);aspect-ratio:1200/675}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.btns{grid-template-columns:1fr}}
+.btn{display:flex;justify-content:space-between;align-items:center;gap:10px;background:transparent;border:1px solid var(--lime);color:var(--lime);font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:18px 20px;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--lime-dim)}
+.btn.solid{background:var(--lime);color:var(--ink)}
+.btn.solid:hover{background:#a2ff94}
+.btn:focus-visible,.in input:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.ref{padding:24px;display:flex;flex-direction:column;gap:14px}
+.ref h2,.soon h2{font-size:24px;letter-spacing:-.02em;margin:0;font-weight:800}
+.ref p,.soon p{margin:0;color:var(--muted);font-size:15px}
+.soon{padding:24px;display:flex;flex-direction:column;gap:10px;border-style:dashed}
+.soon .tag{align-self:flex-start;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.sheet{width:100%;max-width:760px;padding:24px;display:flex;flex-direction:column;gap:16px;max-height:100%;overflow:auto}
+.sheet img{width:100%;height:auto;display:block;border:1px solid var(--line)}
+.mhead{display:flex;justify-content:space-between;align-items:center}
+.x{background:transparent;border:1px solid var(--line);color:var(--fg);width:40px;height:40px;cursor:pointer;font-size:16px}
+.x:hover{border-color:var(--lime)}
+footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+footer a{color:var(--lime)}
+</style>
+</head><body>
+
+<div class="wrap">
+  <div class="top">
+    <span>TxFlow · Calculadora de pontos</span>
+    <span>Feito por <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · <span class="tag">Não oficial</span></span>
+  </div>
+
+  <div class="head">
+    <h1>Quantos <span>pontos</span><br>você vai receber?</h1>
+    <p class="lede">Estimativa não oficial para a Season 0. Coloque o volume que você fez em perpétuos.</p>
+  </div>
+
+  <div class="grid">
+    <section class="box" aria-label="Calculadora">
+      <div class="disclaimer"><b>Não são dados oficiais.</b> Os números abaixo são uma estimativa e provavelmente vão variar. Quando a TxFlow divulgar os dados reais, a calculadora será atualizada.</div>
+      <div class="row">
+        <label for="vol">Seu volume em perps na Season 0</label>
+        <div class="in"><span>$</span><input id="vol" inputmode="numeric" value="250.000" autocomplete="off"><em>USD</em></div>
+      </div>
+      <div class="result" aria-live="polite">
+        <span class="lbl">Você deve receber</span>
+        <div class="pts" id="pts">—</div>
+        <div class="sub" id="range">—</div>
+      </div>
+      <div class="stats">
+        <div><small>Sua fatia</small><b id="share">—</b></div>
+        <div><small>Pts por $1k</small><b id="per1k">—</b></div>
+        <div><small>Pool estimado</small><b>~30 mi</b></div>
+      </div>
+      <div class="warn">
+        <b>Premissas da estimativa (Season 0)</b>
+        <ul>
+          <li>Período: de ~16/04 a ~28/09/2026, cerca de 24 semanas antes da Season 1.</li>
+          <li>Volume total da plataforma no período: ~US$ 4,3 bi (base: ~US$ 3 bi acumulados até agosto e ~US$ 1,5 bi por mês segundo a DefiLlama).</li>
+          <li>Pool: ~30 mi de pontos, supondo o mesmo ritmo da Season 1 (1,25 mi por semana × 24).</li>
+          <li>Conta: seu volume ÷ volume total × pool. A TxFlow não publicou regras nem pool da Season 0.</li>
+        </ul>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="box ref">
+        <h2>Mostre seu resultado</h2>
+        <p>Gere um card com a sua estimativa e poste no X.</p>
+        <button class="btn solid" id="openShare" type="button"><span>Compartilhar</span><span aria-hidden="true">↗</span></button>
+      </div>
+
+      <div class="box ref">
+        <h2>Ainda não opera na TxFlow?</h2>
+        <p>Crie sua conta pelo meu convite e comece a acumular pontos.</p>
+        <a class="btn solid" href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener"><span>Criar conta</span><span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="box soon">
+        <span class="tag">Em breve</span>
+        <h2><em>Calculadora</em> de FDV</h2>
+        <p>Quando o token tiver valor de mercado, você vai poder ver quanto seus pontos valem em dólar.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="sheet box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+      <div class="mhead"><span class="lbl" id="mTitle">Seu card</span><button class="x" id="closeShare" type="button" aria-label="Fechar">✕</button></div>
+      <img id="thumb" alt="Card com a sua estimativa de pontos">
+      <div class="btns">
+        <button class="btn" id="dl" type="button"><span id="dlT">Baixar imagem</span><span aria-hidden="true">↓</span></button>
+        <a class="btn solid" id="tweet" href="https://x.com/intent/post" target="_blank" rel="noopener"><span id="tweetT">Postar no X</span><span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="hint" id="shareHint">O card aparece sozinho no post junto com o link.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>Ferramenta independente, sem vínculo com a TxFlow. Regras: <a href="https://docs.txflow.com/points/how-points-work" target="_blank" rel="noopener">docs.txflow.com</a></span>
+    <span>Siga <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · Convite: <a href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener">app.txflow.com/r/EE1EK0IACD</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const POOL=30e6, PLATFORM=4.3e9, REF='https://app.txflow.com/r/EE1EK0IACD', CALC=location.origin;
+  const $=id=>document.getElementById(id);
+  const nf=new Intl.NumberFormat('pt-BR');
+  const fmt=n=>nf.format(Math.round(n));
+  const num=s=>Number(String(s).replace(/[^\d]/g,''))||0;
+  const cv=document.createElement('canvas');cv.width=1200;cv.height=675;
+  let state={total:0,V:0,share:0},t;
+
+  // Pixelated serif: draw text small, then scale up without smoothing (same jagged-serif feel as the "Tx").
+  function pixText(text,size,color,step){
+    step=step||Math.max(3,Math.round(size/22));
+    const s=document.createElement('canvas'),sc=s.getContext('2d');
+    const f=Math.round(size/step)+'px "IM Fell English", Georgia, serif';
+    sc.font=f;const w=Math.ceil(sc.measureText(text).width)+2,h=Math.ceil(size/step*1.25);
+    s.width=w;s.height=h;sc.font=f;sc.textBaseline='alphabetic';
+    sc.fillStyle=color;sc.fillText(text,1,Math.round(h*.8));
+    const d=sc.getImageData(0,0,w,h);for(let i=3;i<d.data.length;i+=4)d.data[i]=d.data[i]>110?255:0;sc.putImageData(d,0,0);
+    const o=document.createElement('canvas');o.width=w*step;o.height=h*step;
+    const oc=o.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(s,0,0,o.width,o.height);
+    return {canvas:o,base:Math.round(h*.8)*step};
+  }
+  function heroWord(){
+    const el=document.querySelector('h1 span');if(!el)return;
+    const p=pixText('pontos',220,'#7dff6b',8);
+    const img=new Image();img.src=p.canvas.toDataURL();img.alt='pontos';
+    img.style.cssText='height:1.12em;width:auto;vertical-align:-.22em;display:inline-block;max-width:100%';
+    el.replaceChildren(img);
+  }
+  function draw(){
+    const c=cv.getContext('2d'),{total,V,share}=state;
+    c.fillStyle='#050605';c.fillRect(0,0,1200,675);
+    c.fillStyle='#141a12';for(let x=40;x<1200;x+=24)for(let y=40;y<675;y+=24)c.fillRect(x,y,2,2);
+    c.strokeStyle='#1f281d';c.lineWidth=2;c.strokeRect(40,40,1120,595);
+    c.fillStyle='#88927f';c.font='500 20px "JetBrains Mono", monospace';
+    c.fillText('SEASON 0 · CALCULADORA DE PONTOS',80,96);
+    c.textAlign='right';c.fillStyle='#7dff6b';c.fillText('@DJA_Chain',1120,96);c.textAlign='left';
+    // green block
+    c.fillStyle='#7dff6b';c.fillRect(80,130,700,330);
+    c.fillStyle='#1d4a12';c.font='500 20px "JetBrains Mono", monospace';
+    c.fillText('EU DEVO RECEBER',112,180);
+    c.fillStyle='#071003';
+    let size=150;const txt=fmt(total);
+    do{c.font='800 '+size+'px Archivo, sans-serif';size-=6}while(c.measureText(txt).width>630&&size>50);
+    c.fillText(txt,108,345);
+    const p=pixText('pontos',70,'#071003',4);c.drawImage(p.canvas,112,420-p.base);
+    // right panel: pixel serif word fill
+    c.strokeStyle='#7dff6b';c.strokeRect(800,130,320,330);
+    const s1=pixText('Season',74,'#7dff6b',5);c.drawImage(s1.canvas,822,240-s1.base);
+    const s2=pixText('0',230,'#7dff6b',9);c.drawImage(s2.canvas,1100-s2.canvas.width,445-s2.base);
+    c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';c.fillText('NÃO OFICIAL',822,440);
+    // stats row
+    const cols=[['VOLUME','$'+fmt(V)],['FATIA DO POOL',(share*100).toFixed(4).replace('.',',')+'%'],['PTS POR $1K',(POOL/PLATFORM*1000).toFixed(1).replace('.',',')]];
+    cols.forEach(([k,v],i)=>{const x=80+i*360;c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';c.fillText(k,x,510);c.fillStyle='#f2f5ef';c.font='700 30px "JetBrains Mono", monospace';c.fillText(v,x,548)});
+    c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';
+    c.fillText('Estimativa não oficial · convite: '+REF.replace('https://',''),80,606);
+    $('thumb').src=cv.toDataURL('image/png');
+  }
+
+  function calc(){
+    const V=num($('vol').value);
+    const share=Math.min(1,V/PLATFORM), total=share*POOL;
+    state={total,V,share};
+    $('pts').textContent=fmt(total);
+    $('range').textContent='faixa provável: '+fmt(total*0.5)+' a '+fmt(total*1.5)+' pts';
+    $('share').textContent=(share*100).toFixed(4).replace('.',',')+'%';
+    $('per1k').textContent=(POOL/PLATFORM*1000).toFixed(1).replace('.',',');
+    clearTimeout(t);t=setTimeout(draw,120);
+  }
+
+  $('vol').addEventListener('input',e=>{const n=num(e.target.value);e.target.value=n?nf.format(n):'';calc()});
+  const modal=$('modal');
+  $('openShare').addEventListener('click',()=>{draw();modal.hidden=false;$('tweet').focus()});
+  const close=()=>{modal.hidden=true;$('openShare').focus()};
+  $('closeShare').addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+
+  $('dl').addEventListener('click',()=>{
+    cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-season0-pontos.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},'image/png');
+  });
+
+  function tweetHref(){
+    const text='Minha estimativa de pontos na Season 0 da TxFlow: ~'+fmt(state.total)+' pts 👀\n\nCalcule os seus na Calculadora de Pontos TxFlow (estimativa não oficial):';
+    $('tweet').href='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(CALC+'/s?v='+Math.round(state.V));
+  }
+  $('openShare').addEventListener('click',tweetHref);
+  $('vol').addEventListener('input',tweetHref);
+  try{const q=new URLSearchParams(location.search).get('v');if(q&&+q>0)$('vol').value=nf.format(+q)}catch(e){}
+  calc();
+  (document.fonts&&document.fonts.load?document.fonts.load('40px "IM Fell English"').then(()=>document.fonts.ready):Promise.resolve()).catch(()=>{}).then(()=>{heroWord();draw()});
+})();
+</script>
+</body></html>

@@ -1,0 +1,7 @@
+{
+  "name": "txflow-points-calculator",
+  "private": true,
+  "dependencies": {
+    "@vercel/og": "0.6.3"
+  }
+}
