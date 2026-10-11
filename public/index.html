@@ -256,7 +256,7 @@ footer a{color:var(--lime)}
   });
 
   function tweetHref(){
-    const text='Minha estimativa de pontos na Season 0 da TxFlow: ~'+fmt(state.total)+' pts 👀\n\nCalcule os seus na Calculadora de Pontos TxFlow (estimativa não oficial):';
+    const text='Minha estimativa de pontos na Season 0 da @TxFlow_L1: ~'+fmt(state.total)+' pts 👀\n\nCalcule os seus na Calculadora de Pontos TxFlow (estimativa não oficial):';
     $('tweet').href='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(CALC+'/s?v='+Math.round(state.V));
   }
   $('openShare').addEventListener('click',tweetHref);
