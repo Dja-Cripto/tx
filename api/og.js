@@ -14,8 +14,11 @@ const h = (type, style, children) => ({ type, props: { style, children } });
 const nf = new Intl.NumberFormat('pt-BR');
 
 export default async function handler(req) {
-  const v = Math.max(0, Math.round(Number(new URL(req.url).searchParams.get('v')) || 0));
-  const share = Math.min(1, v / PLATFORM), pts = share * POOL;
+  const q = new URL(req.url).searchParams;
+  const v = Math.max(0, Math.round(Number(q.get('v')) || 0));
+  const f = Math.max(0, Number(q.get('f')) || 0);
+  const adj = v && f ? Math.max(0.85, Math.min(1.15, 1 + (f / v / 0.0003 - 1) * 0.15)) : 1;
+  const share = Math.min(1, v / PLATFORM), pts = share * POOL * adj;
   const [archivo, fell, mono] = await Promise.all([
     font('Archivo', 800), font('IM+Fell+English', 400), font('JetBrains+Mono', 700),
   ]);
@@ -35,14 +38,14 @@ export default async function handler(req) {
           h('div', { fontFamily: 'Fell', fontSize: 74, color: LIME, lineHeight: 1 }, 'Season'),
           h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }, [
             label('NÃO OFICIAL'),
-            h('div', { fontFamily: 'Fell', fontSize: 200, color: LIME, lineHeight: 0.8 }, '0'),
+            h('div', { fontFamily: 'Fell', fontSize: 260, color: LIME, lineHeight: 0.75 }, '0'),
           ]),
         ]),
       ]),
       h('div', { display: 'flex' }, [
         stat('VOLUME', '$' + nf.format(v)),
         stat('FATIA DO POOL', (share * 100).toFixed(4).replace('.', ',') + '%'),
-        stat('PTS POR $1K', (POOL / PLATFORM * 1000).toFixed(1).replace('.', ',')),
+        stat('TAXAS PAGAS', f ? '$' + nf.format(Math.round(f)) : '—'),
       ]),
       label('Estimativa não oficial · convite: app.txflow.com/r/EE1EK0IACD'),
     ]),

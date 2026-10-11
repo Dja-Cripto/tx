@@ -4,8 +4,10 @@ export const config = { runtime: 'edge' };
 export default function handler(req) {
   const url = new URL(req.url);
   const v = Math.max(0, Math.round(Number(url.searchParams.get('v')) || 0));
-  const img = `${url.origin}/api/og?v=${v}`;
-  const dest = `${url.origin}/?v=${v}`;
+  const f = Math.max(0, Math.round(Number(url.searchParams.get('f')) || 0));
+  const qs = `v=${v}` + (f ? `&f=${f}` : '');
+  const img = `${url.origin}/api/og?${qs}`;
+  const dest = `${url.origin}/?${qs}`;
   const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <title>Calculadora de Pontos TxFlow · Season 0</title>
 <meta property="og:title" content="Calculadora de Pontos TxFlow · Season 0">
