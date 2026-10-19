@@ -134,9 +134,9 @@ footer a{color:var(--lime)}
       <p class="lede">Estimativa não oficial para a Season 0. Coloque o volume que você fez em perpétuos e, se quiser, as taxas que pagou.</p>
     </div>
     <div class="facts" aria-label="Premissas da Season 0">
-      <div><small>Volume S0</small><b>$6,62 bi</b><span>dado real (Dune)</span></div>
-      <div><small>Pool S0</small><b>~33 mi</b><span>pontos, estimado</span></div>
-      <div><small>Período</small><b>~26 sem</b><span>26/03 a 27/09</span></div>
+      <div><small>Volume S0</small><b>$8,70 bi</b><span>dado real (Dune)</span></div>
+      <div><small>Pool S0</small><b>~35 mi</b><span>pontos, estimado</span></div>
+      <div><small>Período</small><b>~28 sem</b><span>26/03 a 11/10</span></div>
     </div>
   </div>
 
@@ -161,14 +161,14 @@ footer a{color:var(--lime)}
       <div class="stats">
         <div><small>Sua fatia</small><b id="share">—</b></div>
         <div><small>Ajuste por taxa</small><b id="feeAdj">—</b></div>
-        <div><small>Pool estimado</small><b>~33 mi</b></div>
+        <div><small>Pool estimado</small><b>~35 mi</b></div>
       </div>
       <div class="warn">
         <b>Premissas da estimativa (Season 0)</b>
         <ul>
-          <li>Período: de 26/03 (primeiro dia de volume na mainnet) a 27/09/2026, cerca de 26 semanas antes da Season 1.</li>
-          <li>Volume total de perps no período: <b style="display:inline;margin:0">US$ 6,62 bi</b>, dado real do painel oficial da TxFlow na <a href="https://dune.com/txflow_mainnet/dashboards" target="_blank" rel="noopener" style="color:var(--lime)">Dune</a>.</li>
-          <li>Pool: ~33 mi de pontos, supondo o mesmo ritmo da Season 1 (1,25 mi por semana × 26). Este é o único número estimado: a TxFlow não divulgou o pool da Season 0.</li>
+          <li>Período: de 26/03 (primeiro dia de volume na mainnet) a 11/10/2026. A Season 1 começou em 12/10, segundo a <a href="https://docs.txflow.com/points/how-points-work" target="_blank" rel="noopener" style="color:var(--lime)">documentação oficial</a>, que diz que a atividade anterior terá um anúncio separado.</li>
+          <li>Volume total de perps no período: <b style="display:inline;margin:0">US$ 8,70 bi</b>, dado real do painel oficial da TxFlow na <a href="https://dune.com/txflow_mainnet/dashboards" target="_blank" rel="noopener" style="color:var(--lime)">Dune</a>.</li>
+          <li>Pool: ~35 mi de pontos, supondo o mesmo ritmo da Season 1 (1,25 mi por semana × 28). Este é o único número estimado: a TxFlow não divulgou o pool da Season 0.</li>
           <li>Conta: seu volume ÷ volume total × pool.</li>
           <li>Taxas: comparamos sua taxa por dólar de volume com a média (~0,03%). Isso ajusta o resultado entre -15% e +15%. Sem taxa informada, não há ajuste.</li>
         </ul>
@@ -233,7 +233,7 @@ footer a{color:var(--lime)}
 
 <script>
 (function(){
-  const POOL=33e6, PLATFORM=6.615e9, REF='https://app.txflow.com/r/EE1EK0IACD', CALC=location.origin;
+  const POOL=35e6, PLATFORM=8.705e9, REF='https://app.txflow.com/r/EE1EK0IACD', CALC=location.origin;
   const $=id=>document.getElementById(id);
   const nf=new Intl.NumberFormat('pt-BR');
   const fmt=n=>nf.format(Math.round(n));

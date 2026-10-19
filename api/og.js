@@ -2,7 +2,7 @@
 import { ImageResponse } from '@vercel/og';
 export const config = { runtime: 'edge' };
 
-const POOL = 33e6, PLATFORM = 6.615e9;
+const POOL = 35e6, PLATFORM = 8.705e9;
 const LIME = '#7dff6b', BG = '#050605', INK = '#071003', MUTED = '#88927f', LINE = '#1f281d';
 
 async function font(family, weight) {
