@@ -84,6 +84,14 @@ label,.lbl{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-tran
 .result .lbl{color:#2c4512}
 .pts{font-weight:800;font-size:clamp(64px,10vw,128px);letter-spacing:-.045em;line-height:.95;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .sub{font-family:var(--mono);font-size:16px}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.scen div{padding:20px 28px;border-right:1px solid var(--line);min-width:0}
+.scen div:last-child{border-right:0}
+.scen .mid{background:var(--lime-dim)}
+.scen small{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.scen b{display:block;font-family:var(--sans);font-weight:800;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.scen .mid b{color:var(--lime)}
+@media (max-width:560px){.scen{grid-template-columns:1fr}.scen div{border-right:0;border-bottom:1px solid var(--line)}}
 .stats{display:grid;grid-template-columns:repeat(3,1fr)}
 .stats div{padding:20px 28px;border-right:1px solid var(--line);min-width:0}
 .stats div:last-child{border-right:0}
@@ -135,7 +143,7 @@ footer a{color:var(--lime)}
     </div>
     <div class="facts" aria-label="Premissas da Season 0">
       <div><small>Volume S0</small><b>$8,70 bi</b><span>dado real (Dune)</span></div>
-      <div><small>Pool S0</small><b>~35 mi</b><span>pontos, estimado</span></div>
+      <div><small>Pool S0</small><b>10–30 mi</b><span>3 cenários</span></div>
       <div><small>Período</small><b>~28 sem</b><span>26/03 a 11/10</span></div>
     </div>
   </div>
@@ -156,19 +164,24 @@ footer a{color:var(--lime)}
       <div class="result" aria-live="polite">
         <span class="lbl">Você deve receber</span>
         <div class="pts" id="pts">—</div>
-        <div class="sub" id="range">—</div>
+        <div class="sub" id="range">cenário base: pool de 20 mi de pontos</div>
+      </div>
+      <div class="scen" aria-live="polite">
+        <div><small>Pessimista · pool 10 mi</small><b id="sc0">—</b></div>
+        <div class="mid"><small>Base · pool 20 mi</small><b id="sc1">—</b></div>
+        <div><small>Otimista · pool 30 mi</small><b id="sc2">—</b></div>
       </div>
       <div class="stats">
         <div><small>Sua fatia</small><b id="share">—</b></div>
         <div><small>Ajuste por taxa</small><b id="feeAdj">—</b></div>
-        <div><small>Pool estimado</small><b>~35 mi</b></div>
+        <div><small>Pool (base)</small><b>20 mi</b></div>
       </div>
       <div class="warn">
         <b>Premissas da estimativa (Season 0)</b>
         <ul>
           <li>Período: de 26/03 (primeiro dia de volume na mainnet) a 11/10/2026. A Season 1 começou em 12/10, segundo a <a href="https://docs.txflow.com/points/how-points-work" target="_blank" rel="noopener" style="color:var(--lime)">documentação oficial</a>, que diz que a atividade anterior terá um anúncio separado.</li>
           <li>Volume total de perps no período: <b style="display:inline;margin:0">US$ 8,70 bi</b>, dado real do painel oficial da TxFlow na <a href="https://dune.com/txflow_mainnet/dashboards" target="_blank" rel="noopener" style="color:var(--lime)">Dune</a>.</li>
-          <li>Pool: ~35 mi de pontos, supondo o mesmo ritmo da Season 1 (1,25 mi por semana × 28). Este é o único número estimado: a TxFlow não divulgou o pool da Season 0.</li>
+          <li>Pool: a TxFlow não divulgou o pool da Season 0. Por isso mostramos 3 cenários: 10 mi (pessimista), 20 mi (base) e 30 mi (otimista) de pontos. O resultado em destaque é o cenário base.</li>
           <li>Conta: seu volume ÷ volume total × pool.</li>
           <li>Taxas: comparamos sua taxa por dólar de volume com a média (~0,03%). Isso ajusta o resultado entre -15% e +15%. Sem taxa informada, não há ajuste.</li>
         </ul>
@@ -233,7 +246,7 @@ footer a{color:var(--lime)}
 
 <script>
 (function(){
-  const POOL=35e6, PLATFORM=8.705e9, REF='https://app.txflow.com/r/EE1EK0IACD', CALC=location.origin;
+  const POOL=20e6, SCEN=[['Pessimista',10e6],['Base',20e6],['Otimista',30e6]], PLATFORM=8.705e9, REF='https://app.txflow.com/r/EE1EK0IACD', CALC=location.origin;
   const $=id=>document.getElementById(id);
   const nf=new Intl.NumberFormat('pt-BR');
   const fmt=n=>nf.format(Math.round(n));
@@ -272,7 +285,7 @@ footer a{color:var(--lime)}
     // green block
     c.fillStyle='#7dff6b';c.fillRect(80,130,700,330);
     c.fillStyle='#1d4a12';c.font='500 20px "JetBrains Mono", monospace';
-    c.fillText('EU DEVO RECEBER',112,180);
+    c.fillText('EU DEVO RECEBER · CENÁRIO BASE',112,180);
     c.fillStyle='#071003';
     let size=150;const txt=fmt(total);
     do{c.font='800 '+size+'px Archivo, sans-serif';size-=6}while(c.measureText(txt).width>630&&size>50);
@@ -284,7 +297,7 @@ footer a{color:var(--lime)}
     const s2=pixText('0',230,'#7dff6b',9);c.drawImage(s2.canvas,1100-s2.canvas.width,445-s2.base);
     c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';c.fillText('NÃO OFICIAL',822,440);
     // stats row
-    const cols=[['VOLUME','$'+fmt(V)],['FATIA DO POOL',(share*100).toFixed(4).replace('.',',')+'%'],['TAXAS PAGAS',state.F?'$'+fmt(state.F):'—']];
+    const k=share*(state.adj||1);const cols=[['VOLUME','$'+fmt(V)],['PESSIMISTA (10 MI)',fmt(k*10e6)+' pts'],['OTIMISTA (30 MI)',fmt(k*30e6)+' pts']];
     cols.forEach(([k,v],i)=>{const x=80+i*360;c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';c.fillText(k,x,510);c.fillStyle='#f2f5ef';c.font='700 30px "JetBrains Mono", monospace';c.fillText(v,x,548)});
     c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';
     c.fillText('Estimativa não oficial · convite: '+REF.replace('https://',''),80,606);
@@ -300,7 +313,7 @@ footer a{color:var(--lime)}
     state={total,V,share,F,adj};
     $('feeAdj').textContent=F?((adj>=1?'+':'')+Math.round((adj-1)*100)+'%'):'—';
     $('pts').textContent=fmt(total);
-    $('range').textContent='faixa provável: '+fmt(total*0.5)+' a '+fmt(total*1.5)+' pts';
+    SCEN.forEach(([,pool],i)=>{$('sc'+i).textContent=fmt(share*pool*adj)+' pts'});
     $('share').textContent=(share*100).toFixed(4).replace('.',',')+'%';
     clearTimeout(t);t=setTimeout(draw,120);
   }
@@ -319,7 +332,7 @@ footer a{color:var(--lime)}
   });
 
   function tweetHref(){
-    const text='Minha estimativa de pontos na Season 0 da @TxFlow_L1: ~'+fmt(state.total)+' pts 👀\n\nCalcule os seus na Calculadora de Pontos TxFlow (estimativa não oficial):';
+    const text='Minha estimativa de pontos na Season 0 da @TxFlow_L1: ~'+fmt(state.total)+' pts (entre '+fmt(state.total/2)+' e '+fmt(state.total*1.5)+') 👀\n\nCalcule os seus na Calculadora de Pontos TxFlow (estimativa não oficial):';
     $('tweet').href='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(CALC+'/s?v='+Math.round(state.V)+(state.F?'&f='+Math.round(state.F):''));
   }
   $('openShare').addEventListener('click',tweetHref);

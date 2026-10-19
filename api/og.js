@@ -2,7 +2,7 @@
 import { ImageResponse } from '@vercel/og';
 export const config = { runtime: 'edge' };
 
-const POOL = 35e6, PLATFORM = 8.705e9;
+const POOL = 20e6, PLATFORM = 8.705e9;
 const LIME = '#7dff6b', BG = '#050605', INK = '#071003', MUTED = '#88927f', LINE = '#1f281d';
 
 async function font(family, weight) {
@@ -30,7 +30,7 @@ export default async function handler(req) {
       h('div', { display: 'flex', justifyContent: 'space-between' }, [label('SEASON 0 · CALCULADORA DE PONTOS'), label('@DJA_Chain', LIME)]),
       h('div', { display: 'flex', gap: 20, height: 330 }, [
         h('div', { width: 700, background: LIME, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '30px 32px' }, [
-          label('EU DEVO RECEBER', '#1d4a12'),
+          label('EU DEVO RECEBER · CENÁRIO BASE', '#1d4a12'),
           h('div', { fontFamily: 'Archivo', fontSize: pts >= 1e6 ? 110 : 150, color: INK, lineHeight: 1 }, nf.format(Math.round(pts))),
           h('div', { fontFamily: 'Fell', fontSize: 64, color: INK, lineHeight: 1 }, 'pontos'),
         ]),
@@ -44,8 +44,8 @@ export default async function handler(req) {
       ]),
       h('div', { display: 'flex' }, [
         stat('VOLUME', '$' + nf.format(v)),
-        stat('FATIA DO POOL', (share * 100).toFixed(4).replace('.', ',') + '%'),
-        stat('TAXAS PAGAS', f ? '$' + nf.format(Math.round(f)) : '—'),
+        stat('PESSIMISTA (10 MI)', nf.format(Math.round(share * adj * 10e6)) + ' pts'),
+        stat('OTIMISTA (30 MI)', nf.format(Math.round(share * adj * 30e6)) + ' pts'),
       ]),
       label('Estimativa não oficial · convite: app.txflow.com/r/EE1EK0IACD'),
     ]),
