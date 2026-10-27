@@ -274,7 +274,10 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
       <div class="hl"><small class="k">Custo médio</small><b id="dCost">—</b><span id="dBreak">por ponto</span></div>
     </div>
     <div class="dbar">
-      <button class="btn solid" id="dAdd" type="button"><span>+ Adicionar semana</span></button>
+      <div class="row2">
+        <button class="btn solid" id="dAdd" type="button"><span>+ Adicionar semana</span></button>
+        <button class="btn" id="dAdd0" type="button"><span>+ Semana 0 (Season 0)</span></button>
+      </div>
       <div class="row2">
         <button class="btn sm" id="dUse" type="button">Usar na calculadora</button>
         <button class="btn sm" id="dExport" type="button">Exportar</button>
@@ -288,7 +291,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
         <tbody id="dBody"></tbody>
         <tfoot><tr><td>Total</td><td></td><td id="fVol"></td><td id="fSpent"></td><td id="fPts"></td><td id="fCost" class="calc"></td><td id="fPer" class="calc"></td><td></td></tr></tfoot>
       </table>
-      <div class="empty" id="dEmpty">Nenhuma semana anotada. Clique em "+ Adicionar semana" e preencha volume, gasto e pontos.</div>
+      <div class="empty" id="dEmpty">Nenhuma semana anotada. Se você farmou antes de 12/10, comece por "+ Semana 0". Depois use "+ Adicionar semana" para cada semana da Season 1.</div>
     </div>
     <p class="hint">Seus dados ficam salvos só neste navegador. Use "Exportar" para guardar uma cópia ou levar para outro aparelho.</p>
   </section>
@@ -443,6 +446,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   const KEY='txflow-diario-v1';
   let rows=[];
   try{rows=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(rows))rows=[]}catch(e){rows=[]}
+  rows.forEach((r,i)=>{if(r.wk===undefined)r.wk=i+1});
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(rows))}catch(e){}};
   const money=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const cpp=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3});
@@ -459,6 +463,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     $('fVol').textContent=vol(t.v);$('fSpent').textContent=money(t.g);$('fPts').textContent=fmt(t.p);
     $('fCost').textContent=t.p?cpp(t.g/t.p):'—';$('fPer').textContent=t.v?L(t.p/t.v*1000,2):'—';
     $('dEmpty').hidden=rows.length>0;
+    sync0();
   }
   function rowCalc(tr,r){
     tr.querySelector('.c1').textContent=+r.pts?cpp((+r.gasto||0)/+r.pts):'—';
@@ -468,20 +473,23 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     const tb=$('dBody');tb.replaceChildren();
     rows.forEach((r,i)=>{
       const tr=document.createElement('tr');
-      tr.innerHTML='<td class="wk">'+(i+1)+'</td><td><input data-f="par" aria-label="Par"></td><td><input data-f="vol" inputmode="decimal" aria-label="Volume"></td><td><input data-f="gasto" inputmode="decimal" aria-label="Gasto"></td><td><input data-f="pts" inputmode="decimal" aria-label="Pontos"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button" aria-label="Apagar semana '+(i+1)+'">✕</button></td>';
+      tr.innerHTML='<td class="wk"><input data-f="wk" inputmode="numeric" aria-label="Semana" style="min-width:44px;width:56px"></td><td><input data-f="par" aria-label="Par"></td><td><input data-f="vol" inputmode="decimal" aria-label="Volume"></td><td><input data-f="gasto" inputmode="decimal" aria-label="Gasto"></td><td><input data-f="pts" inputmode="decimal" aria-label="Pontos"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button" aria-label="Apagar semana '+r.wk+'">✕</button></td>';
       tr.querySelectorAll('input').forEach(inp=>{
         const f=inp.dataset.f;inp.value=r[f]===undefined?'':r[f];
-        inp.addEventListener('input',()=>{r[f]=f==='par'?inp.value:(dec(inp.value)||'');save();rowCalc(tr,r);dSummary()});
+        inp.addEventListener('input',()=>{r[f]=f==='par'?inp.value:f==='wk'?(inp.value.replace(/\D/g,'')===''?'':+inp.value.replace(/\D/g,'')):(dec(inp.value)||'');save();rowCalc(tr,r);dSummary()});
       });
       tr.querySelector('.del').addEventListener('click',()=>{rows.splice(i,1);save();dRender()});
       rowCalc(tr,r);tb.appendChild(tr);
     });
     dSummary();
   }
-  $('dAdd').addEventListener('click',()=>{const last=rows[rows.length-1];rows.push({par:last?last.par:'',vol:'',gasto:'',pts:''});save();dRender();const ins=$('dBody').lastElementChild.querySelectorAll('input');(ins[1]||ins[0]).focus()});
+  const nextWk=()=>rows.length?Math.max(...rows.map(r=>+r.wk||0))+1:1;
+  function sync0(){$('dAdd0').hidden=rows.some(r=>String(r.wk)==='0')}
+  $('dAdd').addEventListener('click',()=>{const last=rows[rows.length-1];rows.push({wk:nextWk(),par:last&&String(last.wk)!=='0'?last.par:'',vol:'',gasto:'',pts:''});save();dRender();const ins=$('dBody').lastElementChild.querySelectorAll('input');ins[2].focus()});
+  $('dAdd0').addEventListener('click',()=>{rows.unshift({wk:0,par:'Season 0',vol:'',gasto:'',pts:''});save();dRender();$('dBody').firstElementChild.querySelectorAll('input')[2].focus()});
   $('dUse').addEventListener('click',()=>{const t=dTotals();$('pts').value=nf.format(Math.round(t.p));if(!farm)$('farmSw').click();sign=-1;press($('minus'),$('plus'));$('cost').value=t.g.toFixed(2).replace('.',',');showTab('calc');calc()});
   $('dExport').addEventListener('click',()=>{const b=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-diario.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
-  $('dImport').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const d=JSON.parse(t);if(!Array.isArray(d))throw 0;rows=d.map(r=>({par:String(r.par||''),vol:+r.vol||'',gasto:+r.gasto||'',pts:+r.pts||''}));save();dRender()}).catch(()=>{$('dEmpty').hidden=false;$('dEmpty').textContent='Não foi possível importar: use um arquivo exportado por esta página.'});e.target.value=''});
+  $('dImport').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const d=JSON.parse(t);if(!Array.isArray(d))throw 0;rows=d.map((r,i)=>({wk:r.wk===undefined?i+1:+r.wk||0,par:String(r.par||''),vol:+r.vol||'',gasto:+r.gasto||'',pts:+r.pts||''}));save();dRender()}).catch(()=>{$('dEmpty').hidden=false;$('dEmpty').textContent='Não foi possível importar: use um arquivo exportado por esta página.'});e.target.value=''});
   function showTab(t){
     const c=t==='calc';$('viewCalc').hidden=!c;$('viewDiary').hidden=c;
     $('tbCalc').setAttribute('aria-selected',c);$('tbDiary').setAttribute('aria-selected',!c);
