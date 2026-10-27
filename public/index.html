@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Calculadora de Airdrop TxFlow</title>
-<meta name="description" content="Calculadora não oficial: quanto seus pontos da TxFlow podem valer no airdrop.">
-<meta property="og:title" content="Calculadora de Airdrop TxFlow">
-<meta property="og:description" content="Coloque seus pontos e o FDV e veja quanto o seu airdrop pode valer. Não oficial.">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TxFlow Airdrop Calculator</title>
+<meta name="description" content="Unofficial calculator: what your TxFlow points could be worth in the airdrop.">
+<meta property="og:title" content="TxFlow Airdrop Calculator">
+<meta property="og:description" content="Enter your points and FDV to see what your airdrop could be worth. Unofficial.">
 <meta property="og:image" content="/api/og">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="/api/og">
@@ -148,84 +148,90 @@ tfoot td{font-weight:700;border-bottom:0;padding:14px 16px}
 .btn.sm{padding:12px 16px;font-size:12px}
 .empty{padding:40px 24px;text-align:center;color:var(--muted)}
 footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.topr{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lang{display:inline-flex;border:1px solid var(--line)}
+.lang button{background:transparent;border:0;color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.12em;padding:6px 10px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--lime);color:var(--ink)}
+.lang button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 </style>
 </head><body>
 <div class="wrap">
   <div class="top">
-    <span>TxFlow · Calculadora de airdrop</span>
-    <span>Feito por <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · <span class="tag">Não oficial</span></span>
+    <span data-i="topTitle">TxFlow · Airdrop calculator</span>
+    <span class="topr"><span><span data-i="madeBy">Made by</span> <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · <span class="tag" data-i="unofficial">Unofficial</span></span>
+      <span class="lang" role="group" aria-label="Language"><button type="button" id="lgEn" aria-pressed="true">EN</button><button type="button" id="lgPt" aria-pressed="false">PT</button></span></span>
   </div>
 
   <div class="head">
     <div>
-      <h1>Quanto valem seus <span>pontos</span>?</h1>
-      <p class="lede">Coloque seus pontos, escolha o FDV e veja quanto o seu airdrop da TxFlow pode valer.</p>
+      <h1><span data-i="h1a">What are your</span> <span class="pix" id="pixWord">points</span><span data-i="h1b"> worth?</span></h1>
+      <p class="lede" data-i="lede">Enter your points, pick an FDV and see what your TxFlow airdrop could be worth.</p>
     </div>
-    <div class="facts" aria-label="Pontos oficiais">
-      <div><small>Season 0</small><b>10,77 mi</b><span>oficial · 27/10</span></div>
-      <div><small>Season 1</small><b>~36,6 mi</b><span>12/10/26 → 29/03/27</span></div>
-      <div><small>Próxima distribuição</small><b id="cdTop">—</b><span id="nextTop">—</span></div>
+    <div class="facts" data-ia="factsLabel" aria-label="Official points">
+      <div><small>Season 0</small><b id="fS0">10.77M</b><span data-i="fS0sub">official · Oct 27</span></div>
+      <div><small>Season 1</small><b id="fS1">~36.6M</b><span data-i="fS1sub">Oct 12, '26 → Mar 29, '27</span></div>
+      <div><small data-i="nextDist">Next distribution</small><b id="cdTop">—</b><span id="nextTop">—</span></div>
     </div>
   </div>
 
-  <div class="tabs" role="tablist" aria-label="Seções">
-    <button type="button" role="tab" id="tbCalc" aria-selected="true" aria-controls="viewCalc">Calculadora</button>
-    <button type="button" role="tab" id="tbDiary" aria-selected="false" aria-controls="viewDiary">Meu diário</button>
+  <div class="tabs" role="tablist" data-ia="sections" aria-label="Sections">
+    <button type="button" role="tab" id="tbCalc" aria-selected="true" aria-controls="viewCalc" data-i="tabCalc">Calculator</button>
+    <button type="button" role="tab" id="tbDiary" aria-selected="false" aria-controls="viewDiary" data-i="tabDiary">My journal</button>
   </div>
 
   <div id="viewCalc" role="tabpanel" aria-labelledby="tbCalc">
   <div class="grid">
-    <section class="box" aria-label="Calculadora">
+    <section class="box" data-ia="tabCalc" aria-label="Calculator">
       <div class="sect">
-        <div class="row"><span class="k">Pontos distribuídos</span><span class="big lime" id="totalTxt">—</span></div>
+        <div class="row"><span class="k" data-i="distributed">Points distributed</span><span class="big lime" id="totalTxt">—</span></div>
         <div class="seasons">
-          <div class="chip on"><span class="st">Incluída</span><b>10,77 mi</b><span>Season 0 · oficial<br>26/03 → 11/10/26</span></div>
-          <div class="chip on"><span class="st">Incluída</span><b id="s1Txt">36,6 mi</b><span id="s1Sub">Season 1 · estimada</span><span>12/10/26 → 29/03/27</span></div>
-          <button class="chip" id="s2" type="button" aria-pressed="false"><span class="st" id="s2St">+ Ativar</span><b>+36,6 mi</b><span>Season 2 · hipótese<br>29/03 → 13/09/27</span></button>
+          <div class="chip on"><span class="st" data-i="included">Included</span><b id="cS0">10.77M</b><span data-ih="s0chip">Season 0 · official<br>Mar 26 → Oct 11, '26</span></div>
+          <div class="chip on"><span class="st" data-i="included">Included</span><b id="s1Txt">36.6M</b><span id="s1Sub">Season 1 · estimated</span><span data-i="s1dates">Oct 12, '26 → Mar 29, '27</span></div>
+          <button class="chip" id="s2" type="button" aria-pressed="false"><span class="st" id="s2St">+ Enable</span><b id="cS2">+36.6M</b><span data-ih="s2chip">Season 2 · hypothesis<br>Mar 29 → Sep 13, '27</span></button>
         </div>
       </div>
 
       <div class="sect">
         <div class="row">
-          <label class="k" for="s1Range">Season 1 · pontos na conta</label>
-          <div class="seg" role="group" aria-label="Modo">
-            <button type="button" id="mManual" aria-pressed="true">Manual</button>
-            <button type="button" id="mDate" aria-pressed="false">Até hoje</button>
+          <label class="k" for="s1Range" data-i="s1Label">Season 1 · points counted</label>
+          <div class="seg" role="group" data-ia="mode" aria-label="Mode">
+            <button type="button" id="mManual" aria-pressed="true" data-i="manual">Manual</button>
+            <button type="button" id="mDate" aria-pressed="false" data-i="toDate">To date</button>
           </div>
         </div>
         <input type="range" id="s1Range" min="0" max="36.6" step="0.1" value="36.6">
-        <p class="hint">Arraste para escolher quanto da Season 1 entra na conta. Em "Até hoje", entra só o que já foi distribuído.</p>
+        <p class="hint" data-i="s1Hint">Drag to choose how much of Season 1 counts. "To date" uses only what has already been distributed.</p>
       </div>
 
       <div class="sect">
-        <label class="k" for="pts">Seus pontos</label>
-        <div class="in"><input id="pts" inputmode="numeric" value="5.000" autocomplete="off"><em>PTS</em></div>
+        <label class="k" for="pts" data-i="yourPts">Your points</label>
+        <div class="in"><input id="pts" inputmode="numeric" value="5000" autocomplete="off"><em>PTS</em></div>
       </div>
 
       <div class="sect">
         <div class="two">
           <div>
             <label class="k" for="fdv">FDV</label>
-            <div class="in"><span>$</span><input id="fdv" inputmode="decimal" value="100" autocomplete="off"><em>MILHÕES</em></div>
+            <div class="in"><span>$</span><input id="fdv" inputmode="decimal" value="100" autocomplete="off"><em data-i="millions">MILLION</em></div>
           </div>
           <div>
-            <div class="row"><label class="k" for="air">Airdrop para pontos</label><span class="lime" style="font-family:var(--mono);font-weight:700" id="airTxt">20%</span></div>
+            <div class="row"><label class="k" for="air" data-i="airLabel">Airdrop to points</label><span class="lime" style="font-family:var(--mono);font-weight:700" id="airTxt">20%</span></div>
             <input type="range" id="air" min="1" max="50" step="1" value="20">
-            <p class="hint">Parte do supply que vai para quem tem pontos.</p>
+            <p class="hint" data-i="airHint">Share of the supply that goes to points holders.</p>
           </div>
         </div>
       </div>
 
       <div class="sect">
         <div class="toggle">
-          <div><span class="k">Custo de farm</span><p class="hint">Desconte (−) o que você gastou farmando, como taxas e perdas, ou some (+) o que ganhou.</p></div>
-          <button class="sw" id="farmSw" type="button" role="switch" aria-checked="false" aria-label="Ativar custo de farm"></button>
+          <div><span class="k" data-i="farmCost">Farm cost</span><p class="hint" data-i="farmHint">Subtract (−) what you spent farming, like fees and losses, or add (+) what you earned.</p></div>
+          <button class="sw" id="farmSw" type="button" role="switch" aria-checked="false" data-ia="farmOn" aria-label="Enable farm cost"></button>
         </div>
         <div id="farmBox" hidden>
           <div class="farm">
-            <div class="pm" role="group" aria-label="Sinal">
-              <button type="button" id="minus" aria-pressed="true" aria-label="Subtrair">−</button>
-              <button type="button" id="plus" aria-pressed="false" aria-label="Somar">+</button>
+            <div class="pm" role="group" data-ia="sign" aria-label="Sign">
+              <button type="button" id="minus" aria-pressed="true" data-ia="subtract" aria-label="Subtract">−</button>
+              <button type="button" id="plus" aria-pressed="false" data-ia="add" aria-label="Add">+</button>
             </div>
             <div class="in"><span>$</span><input id="cost" inputmode="decimal" value="350" autocomplete="off"><em>USD</em></div>
           </div>
@@ -236,32 +242,32 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     <aside class="res">
       <div class="box">
         <div class="hero" aria-live="polite">
-          <span class="k" id="heroK">Airdrop estimado</span>
+          <span class="k" id="heroK">Estimated airdrop</span>
           <div class="usd" id="usd">—</div>
           <div class="net" id="net"></div>
         </div>
         <div class="tiles">
-          <div><small class="k">Pontos</small><b id="tPts">—</b></div>
-          <div><small class="k">Fatia</small><b id="tShare">—</b></div>
+          <div><small class="k" data-i="tPoints">Points</small><b id="tPts">—</b></div>
+          <div><small class="k" data-i="tShare">Share</small><b id="tShare">—</b></div>
           <div><small class="k">Tokens</small><b id="tTok">—</b></div>
           <div><small class="k">FDV</small><b id="tFdv">—</b></div>
           <div><small class="k">1 token</small><b id="tPrice">—</b></div>
-          <div><small class="k">1 ponto</small><b id="tPoint">—</b></div>
+          <div><small class="k" data-i="tPoint">1 point</small><b id="tPoint">—</b></div>
         </div>
       </div>
       <div class="btns">
-        <button class="btn solid" id="openShare" type="button"><span>Compartilhar</span><span aria-hidden="true">↗</span></button>
-        <a class="btn" href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener"><span>Criar conta</span><span aria-hidden="true">↗</span></a>
+        <button class="btn solid" id="openShare" type="button"><span data-i="share">Share</span><span aria-hidden="true">↗</span></button>
+        <a class="btn" href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener"><span data-i="createAcc">Create account</span><span aria-hidden="true">↗</span></a>
       </div>
       <div class="box notes">
-        <b>Como a conta funciona</b>
+        <b data-i="howTitle">How the math works</b>
         <ul>
-          <li>Valor = seus pontos ÷ pontos distribuídos × % do airdrop × FDV.</li>
-          <li>Season 0: <b>10.769.544</b> pontos, distribuídos em 27/10 (<a href="https://docs.txflow.com/points/season-0-points" target="_blank" rel="noopener">doc oficial</a>).</li>
-          <li>Season 1: 1,25 mi de pontos de traders por semana, até 152 mil de referral por semana e 488 mil por mês de Growth Reserve, de 12/10 até no máximo o fim de mar/2027 (<a href="https://docs.txflow.com/points/how-points-work" target="_blank" rel="noopener">doc oficial</a>). São ~24 semanas: ~36,6 mi no total.</li>
-          <li>Fim da Season 1: a TxFlow diz que as distribuições terminam até o fim do 1º trimestre de 2027. Contando 24 semanas de segunda a segunda a partir de 12/10/26, a última semana fecha em <b>29/03/2027</b> e a última distribuição cai na terça, <b>30/03/2027</b>.</li>
-          <li>Season 2 não foi anunciada. Ao ativar, somamos o mesmo tamanho da Season 1, com a mesma duração: de 29/03 a 13/09/2027 (hipótese).</li>
-          <li>Supply total suposto: 1 bilhão de tokens. FDV e % do airdrop são escolhas suas. Nada aqui é oficial.</li>
+          <li data-ih="n1">Value = your points ÷ points distributed × airdrop % × FDV.</li>
+          <li data-ih="n2"></li>
+          <li data-ih="n3"></li>
+          <li data-ih="n4"></li>
+          <li data-ih="n5"></li>
+          <li data-ih="n6"></li>
         </ul>
       </div>
     </aside>
@@ -270,68 +276,154 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
 
   <section id="viewDiary" role="tabpanel" aria-labelledby="tbDiary" hidden>
     <div class="dsum">
-      <div><small class="k">Total gasto</small><b id="dSpent">$0,00</b><span>taxas e perdas</span></div>
-      <div><small class="k">Total pontos</small><b id="dPts">0</b><span id="dWeeks">0 semanas</span></div>
-      <div><small class="k">Total volume</small><b id="dVol">$0</b><span id="dPer1k">— pts por $1k</span></div>
-      <div class="hl"><small class="k">Custo médio</small><b id="dCost">—</b><span id="dBreak">por ponto</span></div>
+      <div><small class="k" data-i="dSpentK">Total spent</small><b id="dSpent">$0.00</b><span data-i="dSpentSub">fees and losses</span></div>
+      <div><small class="k" data-i="dPtsK">Total points</small><b id="dPts">0</b><span id="dWeeks">0 weeks</span></div>
+      <div><small class="k" data-i="dVolK">Total volume</small><b id="dVol">$0</b><span id="dPer1k">— pts per $1k</span></div>
+      <div class="hl"><small class="k" data-i="dCostK">Average cost</small><b id="dCost">—</b><span id="dBreak">per point</span></div>
     </div>
     <div class="dbar">
       <div class="row2">
-        <button class="btn solid" id="dAdd" type="button"><span>+ Adicionar semana</span></button>
-        <button class="btn" id="dAdd0" type="button"><span>+ Semana 0 (Season 0)</span></button>
+        <button class="btn solid" id="dAdd" type="button"><span data-i="dAdd">+ Add week</span></button>
+        <button class="btn" id="dAdd0" type="button"><span data-i="dAdd0">+ Week 0 (Season 0)</span></button>
       </div>
       <div class="row2">
-        <button class="btn sm" id="dUse" type="button">Usar na calculadora</button>
-        <button class="btn sm" id="dExport" type="button">Exportar</button>
-        <label class="btn sm" for="dImport" style="cursor:pointer">Importar</label>
+        <button class="btn sm" id="dUse" type="button" data-i="dUse">Use in calculator</button>
+        <button class="btn sm" id="dExport" type="button" data-i="dExport">Export</button>
+        <label class="btn sm" for="dImport" style="cursor:pointer" data-i="dImport">Import</label>
         <input type="file" id="dImport" accept=".json,application/json" hidden>
       </div>
     </div>
     <div class="tw">
       <table>
-        <thead><tr><th>Semana</th><th>Par</th><th>Volume (US$)</th><th>Gasto (US$)</th><th>Pontos</th><th>Custo / ponto</th><th>Pts / $1k</th><th></th></tr></thead>
+        <thead><tr><th data-i="thWeek">Week</th><th data-i="thPair">Pair</th><th data-i="thVol">Volume (US$)</th><th data-i="thSpent">Spent (US$)</th><th data-i="thPts">Points</th><th data-i="thCpp">Cost / point</th><th>Pts / $1k</th><th></th></tr></thead>
         <tbody id="dBody"></tbody>
         <tfoot><tr><td>Total</td><td></td><td id="fVol"></td><td id="fSpent"></td><td id="fPts"></td><td id="fCost" class="calc"></td><td id="fPer" class="calc"></td><td></td></tr></tfoot>
       </table>
-      <div class="empty" id="dEmpty">Nenhuma semana anotada. Se você farmou antes de 12/10, comece por "+ Semana 0". Depois use "+ Adicionar semana" para cada semana da Season 1.</div>
+      <div class="empty" id="dEmpty"></div>
     </div>
-    <p class="hint">Seus dados ficam salvos só neste navegador. Use "Exportar" para guardar uma cópia ou levar para outro aparelho.</p>
+    <p class="hint" data-i="dSaved">Your data is saved only in this browser. Use "Export" to keep a copy or move it to another device.</p>
   </section>
 
   <div class="modal" id="modal" hidden>
     <div class="sheet box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-      <div class="mhead"><span class="k" id="mTitle">Seu card</span><button class="x" id="closeShare" type="button" aria-label="Fechar">✕</button></div>
-      <img id="thumb" alt="Card com o valor estimado do seu airdrop">
+      <div class="mhead"><span class="k" id="mTitle" data-i="yourCard">Your card</span><button class="x" id="closeShare" type="button" data-ia="close" aria-label="Close">✕</button></div>
+      <img id="thumb" data-ia="cardAlt" alt="Card with your estimated airdrop value">
       <div class="btns">
-        <button class="btn" id="dl" type="button"><span>Baixar imagem</span><span aria-hidden="true">↓</span></button>
-        <a class="btn solid" id="tweet" href="https://x.com/intent/post" target="_blank" rel="noopener"><span>Postar no X</span><span aria-hidden="true">↗</span></a>
+        <button class="btn" id="dl" type="button"><span data-i="dl">Download image</span><span aria-hidden="true">↓</span></button>
+        <a class="btn solid" id="tweet" href="https://x.com/intent/post" target="_blank" rel="noopener"><span data-i="postX">Post on X</span><span aria-hidden="true">↗</span></a>
       </div>
-      <p class="hint">O card aparece sozinho no post junto com o link.</p>
+      <p class="hint" data-i="cardHint">The card shows up automatically in the post along with the link.</p>
     </div>
   </div>
 
   <footer>
-    <span>Ferramenta independente, sem vínculo com a TxFlow. Não é recomendação financeira.</span>
-    <span>Siga <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · Convite: <a href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener">app.txflow.com/r/EE1EK0IACD</a></span>
+    <span data-i="foot1">Independent tool, not affiliated with TxFlow. Not financial advice.</span>
+    <span><span data-i="follow">Follow</span> <a href="https://x.com/DJA_Chain" target="_blank" rel="noopener">@DJA_Chain</a> · <span data-i="invite">Invite</span>: <a href="https://app.txflow.com/r/EE1EK0IACD" target="_blank" rel="noopener">app.txflow.com/r/EE1EK0IACD</a></span>
   </footer>
 </div>
 
 <script>
 (function(){
   const S0=10769544, WEEK_T=1250000, WEEK_R=152000, MONTH_G=488000, WEEKS=24, MONTHS=6;
-  const S1=WEEKS*(WEEK_T+WEEK_R)+MONTHS*MONTH_G; // ~36,6 mi
+  const S1=WEEKS*(WEEK_T+WEEK_R)+MONTHS*MONTH_G; // ~36.6M
   const SUPPLY=1e9, S1_START=Date.UTC(2026,9,12), FIRST_DROP=Date.UTC(2026,9,20), WK=7*864e5;
   const REF='https://app.txflow.com/r/EE1EK0IACD';
+  const DOC0='https://docs.txflow.com/points/season-0-points', DOC1='https://docs.txflow.com/points/how-points-work';
   const $=id=>document.getElementById(id);
-  const nf=new Intl.NumberFormat('pt-BR');
+
+  // ---- i18n ----
+  const T={
+    en:{
+      topTitle:'TxFlow · Airdrop calculator',madeBy:'Made by',unofficial:'Unofficial',h1a:'What are your',h1b:' worth?',pix:'points',
+      lede:'Enter your points, pick an FDV and see what your TxFlow airdrop could be worth.',factsLabel:'Official points',
+      fS0sub:'official · Oct 27',fS1sub:"Oct 12, '26 → Mar 29, '27",nextDist:'Next distribution',sections:'Sections',tabCalc:'Calculator',tabDiary:'My journal',
+      distributed:'Points distributed',included:'Included',s0chip:"Season 0 · official<br>Mar 26 → Oct 11, '26",s1dates:"Oct 12, '26 → Mar 29, '27",
+      s1est:'Season 1 · estimated',s1date:'Season 1 · to date',enable:'+ Enable',s2chip:"Season 2 · hypothesis<br>Mar 29 → Sep 13, '27",
+      s1Label:'Season 1 · points counted',mode:'Mode',manual:'Manual',toDate:'To date',
+      s1Hint:'Drag to choose how much of Season 1 counts. "To date" uses only what has already been distributed.',
+      yourPts:'Your points',millions:'MILLION',airLabel:'Airdrop to points',airHint:'Share of the supply that goes to points holders.',
+      farmCost:'Farm cost',farmHint:'Subtract (−) what you spent farming, like fees and losses, or add (+) what you earned.',farmOn:'Enable farm cost',sign:'Sign',subtract:'Subtract',add:'Add',
+      estAirdrop:'Estimated airdrop',estLoss:'Estimated loss',estProfit:'Estimated profit',minusCost:' − farm cost ',plusGain:' + farm gain ',
+      tPoints:'Points',tShare:'Share',tPoint:'1 point',share:'Share',createAcc:'Create account',howTitle:'How the math works',
+      n1:'Value = your points ÷ points distributed × airdrop % × FDV.',
+      n2:'Season 0: <b>10,769,544</b> points, distributed on Oct 27 (<a href="'+DOC0+'" target="_blank" rel="noopener">official docs</a>).',
+      n3:'Season 1: 1.25M trader points per week, up to 152K referral points per week and 488K per month of Growth Reserve, from Oct 12 to the end of Mar 2027 at the latest (<a href="'+DOC1+'" target="_blank" rel="noopener">official docs</a>). That is ~24 weeks: ~36.6M in total.',
+      n4:'End of Season 1: TxFlow says distributions end by the end of Q1 2027. Counting 24 Monday-to-Monday weeks from Oct 12, \'26, the last week closes on <b>Mar 29, 2027</b> and the last distribution lands on Tuesday, <b>Mar 30, 2027</b>.',
+      n5:'Season 2 has not been announced. When enabled, we add the same size as Season 1, with the same length: Mar 29 to Sep 13, 2027 (hypothesis).',
+      n6:'Assumed total supply: 1 billion tokens. FDV and airdrop % are your choice. Nothing here is official.',
+      dSpentK:'Total spent',dSpentSub:'fees and losses',dPtsK:'Total points',dVolK:'Total volume',dCostK:'Average cost',
+      week:'week',weeks:'weeks',per1k:'pts per $1k',perPoint:'per point',breakEven:'per point · breaks even at FDV of ',
+      dAdd:'+ Add week',dAdd0:'+ Week 0 (Season 0)',dUse:'Use in calculator',dExport:'Export',dImport:'Import',
+      thWeek:'Week',thPair:'Pair',thVol:'Volume (US$)',thSpent:'Spent (US$)',thPts:'Points',thCpp:'Cost / point',
+      dEmpty:'No weeks logged yet. If you farmed before Oct 12, start with "+ Week 0". Then use "+ Add week" for each Season 1 week.',
+      dImportErr:'Could not import: use a file exported by this page.',delWeek:'Delete week ',
+      dSaved:'Your data is saved only in this browser. Use "Export" to keep a copy or move it to another device.',
+      yourCard:'Your card',close:'Close',cardAlt:'Card with your estimated airdrop value',dl:'Download image',postX:'Post on X',
+      cardHint:'The card shows up automatically in the post along with the link.',
+      foot1:'Independent tool, not affiliated with TxFlow. Not financial advice.',follow:'Follow',invite:'Invite',
+      cTitle:'TXFLOW · AIRDROP CALCULATOR',cEst:'ESTIMATED AIRDROP',cPoint:'1 POINT',cShare:'SHARE',cDist:'Points distributed: ',cFoot:' · 1B supply · unofficial',cInvite:'Invite: ',
+      tweet:(p,v,f)=>'My '+p+' points on @TxFlow_L1 could be worth ~'+v+' at a '+f+' FDV 👀\n\nCalculate yours on the TxFlow Airdrop Calculator (unofficial):'
+    },
+    pt:{
+      topTitle:'TxFlow · Calculadora de airdrop',madeBy:'Feito por',unofficial:'Não oficial',h1a:'Quanto valem seus',h1b:'?',pix:'pontos',
+      lede:'Coloque seus pontos, escolha o FDV e veja quanto o seu airdrop da TxFlow pode valer.',factsLabel:'Pontos oficiais',
+      fS0sub:'oficial · 27/10',fS1sub:'12/10/26 → 29/03/27',nextDist:'Próxima distribuição',sections:'Seções',tabCalc:'Calculadora',tabDiary:'Meu diário',
+      distributed:'Pontos distribuídos',included:'Incluída',s0chip:'Season 0 · oficial<br>26/03 → 11/10/26',s1dates:'12/10/26 → 29/03/27',
+      s1est:'Season 1 · estimada',s1date:'Season 1 · até hoje',enable:'+ Ativar',s2chip:'Season 2 · hipótese<br>29/03 → 13/09/27',
+      s1Label:'Season 1 · pontos na conta',mode:'Modo',manual:'Manual',toDate:'Até hoje',
+      s1Hint:'Arraste para escolher quanto da Season 1 entra na conta. Em "Até hoje", entra só o que já foi distribuído.',
+      yourPts:'Seus pontos',millions:'MILHÕES',airLabel:'Airdrop para pontos',airHint:'Parte do supply que vai para quem tem pontos.',
+      farmCost:'Custo de farm',farmHint:'Desconte (−) o que você gastou farmando, como taxas e perdas, ou some (+) o que ganhou.',farmOn:'Ativar custo de farm',sign:'Sinal',subtract:'Subtrair',add:'Somar',
+      estAirdrop:'Airdrop estimado',estLoss:'Prejuízo estimado',estProfit:'Lucro estimado',minusCost:' − custo de farm ',plusGain:' + ganho de farm ',
+      tPoints:'Pontos',tShare:'Fatia',tPoint:'1 ponto',share:'Compartilhar',createAcc:'Criar conta',howTitle:'Como a conta funciona',
+      n1:'Valor = seus pontos ÷ pontos distribuídos × % do airdrop × FDV.',
+      n2:'Season 0: <b>10.769.544</b> pontos, distribuídos em 27/10 (<a href="'+DOC0+'" target="_blank" rel="noopener">doc oficial</a>).',
+      n3:'Season 1: 1,25 mi de pontos de traders por semana, até 152 mil de referral por semana e 488 mil por mês de Growth Reserve, de 12/10 até no máximo o fim de mar/2027 (<a href="'+DOC1+'" target="_blank" rel="noopener">doc oficial</a>). São ~24 semanas: ~36,6 mi no total.',
+      n4:'Fim da Season 1: a TxFlow diz que as distribuições terminam até o fim do 1º trimestre de 2027. Contando 24 semanas de segunda a segunda a partir de 12/10/26, a última semana fecha em <b>29/03/2027</b> e a última distribuição cai na terça, <b>30/03/2027</b>.',
+      n5:'Season 2 não foi anunciada. Ao ativar, somamos o mesmo tamanho da Season 1, com a mesma duração: de 29/03 a 13/09/2027 (hipótese).',
+      n6:'Supply total suposto: 1 bilhão de tokens. FDV e % do airdrop são escolhas suas. Nada aqui é oficial.',
+      dSpentK:'Total gasto',dSpentSub:'taxas e perdas',dPtsK:'Total pontos',dVolK:'Total volume',dCostK:'Custo médio',
+      week:'semana',weeks:'semanas',per1k:'pts por $1k',perPoint:'por ponto',breakEven:'por ponto · empata com FDV de ',
+      dAdd:'+ Adicionar semana',dAdd0:'+ Semana 0 (Season 0)',dUse:'Usar na calculadora',dExport:'Exportar',dImport:'Importar',
+      thWeek:'Semana',thPair:'Par',thVol:'Volume (US$)',thSpent:'Gasto (US$)',thPts:'Pontos',thCpp:'Custo / ponto',
+      dEmpty:'Nenhuma semana anotada. Se você farmou antes de 12/10, comece por "+ Semana 0". Depois use "+ Adicionar semana" para cada semana da Season 1.',
+      dImportErr:'Não foi possível importar: use um arquivo exportado por esta página.',delWeek:'Apagar semana ',
+      dSaved:'Seus dados ficam salvos só neste navegador. Use "Exportar" para guardar uma cópia ou levar para outro aparelho.',
+      yourCard:'Seu card',close:'Fechar',cardAlt:'Card com o valor estimado do seu airdrop',dl:'Baixar imagem',postX:'Postar no X',
+      cardHint:'O card aparece sozinho no post junto com o link.',
+      foot1:'Ferramenta independente, sem vínculo com a TxFlow. Não é recomendação financeira.',follow:'Siga',invite:'Convite',
+      cTitle:'TXFLOW · CALCULADORA DE AIRDROP',cEst:'AIRDROP ESTIMADO',cPoint:'1 PONTO',cShare:'FATIA',cDist:'Pontos distribuídos: ',cFoot:' · supply 1 bi · não oficial',cInvite:'Convite: ',
+      tweet:(p,v,f)=>'Meus '+p+' pontos na @TxFlow_L1 podem valer ~'+v+' com FDV de '+f+' 👀\n\nCalcule o seu na Calculadora de Airdrop TxFlow (não oficial):'
+    }
+  };
+  let LANG='en';
+  try{const q=new URLSearchParams(location.search).get('l');const s=localStorage.getItem('txflow-lang');LANG=(q==='pt'||q==='en')?q:(s==='pt'?'pt':'en')}catch(e){}
+  const t=k=>T[LANG][k];
+  let LOC,DS,GS,nf;
+  function setLocale(){LOC=LANG==='pt'?'pt-BR':'en-US';DS=LANG==='pt'?',':'.';GS=LANG==='pt'?'.':',';nf=new Intl.NumberFormat(LOC)}
+  setLocale();
+
   const fmt=n=>nf.format(Math.round(n));
   const num=s=>Number(String(s).replace(/[^\d]/g,''))||0;
-  const dec=s=>{const t=String(s).trim();const n=parseFloat(t.includes(',')?t.replace(/\./g,'').replace(',','.'):t);return n>0?n:0};
-  const L=(n,d)=>n.toLocaleString('pt-BR',{maximumFractionDigits:d});
-  const mi=n=>L(n/1e6,2)+' mi';
-  const usd=n=>{const a=Math.abs(n),s=n<0?'-':'';if(a>=1e9)return s+'$'+L(a/1e9,2)+' bi';if(a>=1e6)return s+'$'+L(a/1e6,2)+' mi';return s+'$'+a.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})};
-  const price=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:n<1?4:2,maximumFractionDigits:n<1?4:2});
+  const parseLoc=(s,ds,gs)=>{const v=parseFloat(String(s).trim().split(gs).join('').replace(ds,'.'));return v>0?v:0};
+  const dec=s=>parseLoc(s,DS,GS);
+  const L=(n,d)=>n.toLocaleString(LOC,{maximumFractionDigits:d});
+  const mi=n=>LANG==='pt'?L(n/1e6,2)+' mi':L(n/1e6,2)+'M';
+  const usd=n=>{const a=Math.abs(n),s=n<0?'-':'';if(a>=1e9)return s+'$'+L(a/1e9,2)+(LANG==='pt'?' bi':'B');if(a>=1e6)return s+'$'+L(a/1e6,2)+(LANG==='pt'?' mi':'M');return s+'$'+a.toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2})};
+  const price=n=>'$'+n.toLocaleString(LOC,{minimumFractionDigits:n<1?4:2,maximumFractionDigits:n<1?4:2});
+  const decStr=n=>n?String(+n.toFixed(2)).replace('.',DS):'';
   let mode='manual', s2=false, farm=false, sign=-1, st={}, timer;
+
+  function applyStatic(){
+    document.documentElement.lang=LANG==='pt'?'pt-BR':'en';
+    document.querySelectorAll('[data-i]').forEach(el=>{const v=t(el.dataset.i);if(v!==undefined)el.textContent=v});
+    document.querySelectorAll('[data-ih]').forEach(el=>{const v=t(el.dataset.ih);if(v!==undefined)el.innerHTML=v});
+    document.querySelectorAll('[data-ia]').forEach(el=>{const v=t(el.dataset.ia);if(v===undefined)return;if(el.tagName==='IMG')el.alt=v;else el.setAttribute('aria-label',v)});
+    $('fS0').textContent=mi(S0).replace(/^/,'');$('cS0').textContent=mi(S0);$('fS1').textContent='~'+mi(S1);$('cS2').textContent='+'+mi(S1);
+    $('s2St').textContent=s2?t('included'):t('enable');
+    $('dEmpty').textContent=t('dEmpty');
+    $('lgEn').setAttribute('aria-pressed',LANG==='en');$('lgPt').setAttribute('aria-pressed',LANG==='pt');
+  }
 
   function s1ByDate(){
     const now=Date.now();
@@ -339,7 +431,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     const months=Math.min(MONTHS,Math.max(0,Math.floor((now-S1_START)/(30.44*864e5))+1));
     return drops*(WEEK_T+WEEK_R)+months*MONTH_G;
   }
-  function nextDrop(){let t=FIRST_DROP;const now=Date.now();while(t<=now)t+=WK;return t}
+  function nextDrop(){let x=FIRST_DROP;const now=Date.now();while(x<=now)x+=WK;return x}
   function fill(r){r.style.setProperty('--p',((r.value-r.min)/(r.max-r.min)*100)+'%')}
 
   function calc(){
@@ -354,16 +446,16 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     st={P,F,A,total,share,tokens,px,value,perPt,C};
     $('totalTxt').textContent=mi(total);
     $('s1Txt').textContent=mi(s1);
-    $('s1Sub').textContent=mode==='date'?'Season 1 · até hoje':'Season 1 · estimada';
+    $('s1Sub').textContent=mode==='date'?t('s1date'):t('s1est');
     $('airTxt').textContent=Math.round(A*100)+'%';
     const net=value+C, hero=document.querySelector('.hero');
     hero.classList.toggle('neg',farm&&net<0);
-    $('heroK').textContent=farm?(net<0?'Prejuízo estimado':'Lucro estimado'):'Airdrop estimado';
+    $('heroK').textContent=farm?(net<0?t('estLoss'):t('estProfit')):t('estAirdrop');
     $('usd').textContent=farm?(net<0?'−':'+')+usd(Math.abs(net)):usd(value);
-    $('net').textContent=farm?'Airdrop '+usd(value)+(C<0?' − custo de farm ':' + ganho de farm ')+usd(Math.abs(C)):'';
+    $('net').textContent=farm?'Airdrop '+usd(value)+(C<0?t('minusCost'):t('plusGain'))+usd(Math.abs(C)):'';
     $('tPts').textContent=fmt(P);
     $('tShare').textContent=L(share*100,4)+'%';
-    $('tTok').textContent=tokens>=1e3?L(tokens/1e3,2)+' mil':fmt(tokens);
+    $('tTok').textContent=tokens>=1e3?L(tokens/1e3,2)+(LANG==='pt'?' mil':'K'):fmt(tokens);
     $('tFdv').textContent=usd(F);
     $('tPrice').textContent=price(px);
     $('tPoint').textContent=price(perPt);
@@ -372,21 +464,25 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     clearTimeout(timer);timer=setTimeout(draw,150);
   }
 
-  const CKEY='txflow-calc-v1';
+  // Remember last inputs (stored as plain numbers, shown in the current language)
+  const CKEY='txflow-calc-v2';
   let restoring=false;
   function saveCalc(){
     if(restoring)return;
-    try{localStorage.setItem(CKEY,JSON.stringify({pts:$('pts').value,fdv:$('fdv').value,air:$('air').value,s1:$('s1Range').value,mode,s2,farm,sign,cost:$('cost').value}))}catch(e){}
+    try{localStorage.setItem(CKEY,JSON.stringify({pts:num($('pts').value),fdv:dec($('fdv').value),air:$('air').value,s1:$('s1Range').value,mode,s2,farm,sign,cost:dec($('cost').value)}))}catch(e){}
   }
   function loadCalc(){
-    let d=null;try{d=JSON.parse(localStorage.getItem(CKEY)||'null')}catch(e){}
+    let d=null;
+    try{d=JSON.parse(localStorage.getItem(CKEY)||'null');
+      if(!d){const o=JSON.parse(localStorage.getItem('txflow-calc-v1')||'null');if(o)d={...o,pts:num(o.pts),fdv:parseLoc(o.fdv,',','.'),cost:parseLoc(o.cost,',','.')}}
+    }catch(e){}
     if(!d)return;
     restoring=true;
-    if(d.pts)$('pts').value=d.pts;
-    if(d.fdv)$('fdv').value=d.fdv;
+    if(d.pts)$('pts').value=nf.format(d.pts);
+    if(d.fdv)$('fdv').value=decStr(d.fdv);
     if(d.air)$('air').value=d.air;
     if(d.s1)$('s1Range').value=d.s1;
-    if(d.cost)$('cost').value=d.cost;
+    if(d.cost)$('cost').value=decStr(d.cost);
     if(d.mode==='date')$('mDate').click();
     if(d.s2)$('s2').click();
     if(d.sign===1)$('plus').click();
@@ -394,10 +490,10 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     restoring=false;
   }
   function tick(){
-    const t=nextDrop();let s=Math.max(0,Math.floor((t-Date.now())/1000));
+    const x=nextDrop();let s=Math.max(0,Math.floor((x-Date.now())/1000));
     const d=Math.floor(s/86400);s%=86400;const p=n=>String(n).padStart(2,'0');
     $('cdTop').textContent=d+'d '+p(Math.floor(s/3600))+':'+p(Math.floor(s%3600/60))+':'+p(s%60);
-    $('nextTop').textContent=new Date(t).toLocaleDateString('pt-BR',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'2-digit'})+', 00:00 UTC';
+    $('nextTop').textContent=new Date(x).toLocaleDateString(LOC,{timeZone:'UTC',weekday:'short',day:'2-digit',month:LANG==='pt'?'2-digit':'short'})+', 00:00 UTC';
   }
 
   // Pixelated serif: draw small, scale up without smoothing.
@@ -412,9 +508,9 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     return {canvas:o,base:Math.round(h*.8)*step};
   }
   function heroWord(){
-    const el=document.querySelector('h1 span');if(!el)return;
-    const p=pixText('pontos',220,'#7dff6b',8);
-    const img=new Image();img.src=p.canvas.toDataURL();img.alt='pontos';
+    const el=$('pixWord');
+    const p=pixText(t('pix'),220,'#7dff6b',8);
+    const img=new Image();img.src=p.canvas.toDataURL();img.alt=t('pix');
     img.style.cssText='height:1.12em;width:auto;vertical-align:-.22em;display:inline-block';
     el.replaceChildren(img);
   }
@@ -425,33 +521,33 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     c.fillStyle='#050605';c.fillRect(0,0,1200,675);
     c.fillStyle='#141a12';for(let x=40;x<1200;x+=24)for(let y=40;y<675;y+=24)c.fillRect(x,y,2,2);
     c.strokeStyle='#1f281d';c.lineWidth=2;c.strokeRect(40,40,1120,595);
-    c.font='500 20px "JetBrains Mono", monospace';c.fillStyle='#88927f';c.fillText('TXFLOW · CALCULADORA DE AIRDROP',80,96);
+    c.font='500 20px "JetBrains Mono", monospace';c.fillStyle='#88927f';c.fillText(t('cTitle'),80,96);
     c.textAlign='right';c.fillStyle='#7dff6b';c.fillText('@DJA_Chain',1120,96);c.textAlign='left';
     c.fillStyle='#7dff6b';c.fillRect(80,130,1040,250);
-    c.fillStyle='#1d4a12';c.font='500 20px "JetBrains Mono", monospace';c.fillText('AIRDROP ESTIMADO',112,178);
+    c.fillStyle='#1d4a12';c.font='500 20px "JetBrains Mono", monospace';c.fillText(t('cEst'),112,178);
     c.fillStyle='#071003';const txt=usd(st.value||0);let size=150;
     do{c.font='800 '+size+'px Archivo, sans-serif';size-=6}while(c.measureText(txt).width>720&&size>50);
     c.fillText(txt,108,330);
     c.font='700 34px "JetBrains Mono", monospace';c.textAlign='right';c.fillText(fmt(st.P||0),1090,290);c.textAlign='left';
-    const p=pixText('pontos',58,'#071003',4);c.drawImage(p.canvas,1090-p.canvas.width,350-p.base);
-    const cols=[['FDV',usd(st.F||0)],['AIRDROP',Math.round((st.A||0)*100)+'%'],['1 PONTO',price(st.perPt||0)],['FATIA',L((st.share||0)*100,4)+'%']];
+    const p=pixText(t('pix'),58,'#071003',4);c.drawImage(p.canvas,1090-p.canvas.width,350-p.base);
+    const cols=[['FDV',usd(st.F||0)],['AIRDROP',Math.round((st.A||0)*100)+'%'],[t('cPoint'),price(st.perPt||0)],[t('cShare'),L((st.share||0)*100,4)+'%']];
     cols.forEach(([k,v],i)=>{const x=80+i*265;c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';c.fillText(k,x,440);c.fillStyle='#f2f5ef';c.font='700 30px "JetBrains Mono", monospace';c.fillText(v,x,480)});
     c.fillStyle='#88927f';c.font='500 16px "JetBrains Mono", monospace';
-    c.fillText('Pontos distribuídos: '+mi(st.total||0)+' · supply 1 bi · não oficial',80,560);
-    c.fillText('Convite: '+REF.replace('https://',''),80,600);
+    c.fillText(t('cDist')+mi(st.total||0)+t('cFoot'),80,560);
+    c.fillText(t('cInvite')+REF.replace('https://',''),80,600);
     $('thumb').src=cv.toDataURL('image/png');
   }
 
   function tweetHref(){
-    const q=new URLSearchParams({p:Math.round(st.P||0),fdv:L((st.F||0)/1e6,2).replace(/\./g,'').replace(',','.'),a:Math.round((st.A||0)*100),t:Math.round(st.total||0)});
-    const text='Meus '+fmt(st.P||0)+' pontos na @TxFlow_L1 podem valer ~'+usd(st.value||0)+' com FDV de '+usd(st.F||0)+' 👀\n\nCalcule o seu na Calculadora de Airdrop TxFlow (não oficial):';
+    const q=new URLSearchParams({p:Math.round(st.P||0),fdv:+((st.F||0)/1e6).toFixed(2),a:Math.round((st.A||0)*100),t:Math.round(st.total||0),l:LANG});
+    const text=t('tweet')(fmt(st.P||0),usd(st.value||0),usd(st.F||0));
     $('tweet').href='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(location.origin+'/s?'+q);
   }
 
   const press=(on,off)=>{on.setAttribute('aria-pressed','true');off.setAttribute('aria-pressed','false')};
   $('mManual').addEventListener('click',()=>{mode='manual';press($('mManual'),$('mDate'));$('s1Range').disabled=false;calc()});
   $('mDate').addEventListener('click',()=>{mode='date';press($('mDate'),$('mManual'));$('s1Range').disabled=true;calc()});
-  $('s2').addEventListener('click',()=>{s2=!s2;$('s2').setAttribute('aria-pressed',s2);$('s2').classList.toggle('on',s2);$('s2St').textContent=s2?'Incluída':'+ Ativar';calc()});
+  $('s2').addEventListener('click',()=>{s2=!s2;$('s2').setAttribute('aria-pressed',s2);$('s2').classList.toggle('on',s2);$('s2St').textContent=s2?t('included'):t('enable');calc()});
   $('farmSw').addEventListener('click',()=>{farm=!farm;$('farmSw').setAttribute('aria-checked',farm);$('farmBox').hidden=!farm;calc()});
   $('minus').addEventListener('click',()=>{sign=-1;press($('minus'),$('plus'));calc()});
   $('plus').addEventListener('click',()=>{sign=1;press($('plus'),$('minus'));calc()});
@@ -466,37 +562,38 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
   $('dl').addEventListener('click',()=>{cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-airdrop.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},'image/png')});
 
-  // ---- Meu diário (salvo no navegador) ----
+  // ---- My journal (saved in the browser) ----
   const KEY='txflow-diario-v1';
   let rows=[];
   try{rows=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(rows))rows=[]}catch(e){rows=[]}
   rows.forEach((r,i)=>{if(r.wk===undefined)r.wk=i+1});
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(rows))}catch(e){}};
-  const money=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const cpp=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3});
+  const money=n=>'$'+n.toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2});
+  const cpp=n=>'$'+n.toLocaleString(LOC,{minimumFractionDigits:3,maximumFractionDigits:3});
   const vol=n=>'$'+fmt(n);
   const dTotals=()=>rows.reduce((a,r)=>({v:a.v+(+r.vol||0),g:a.g+(+r.gasto||0),p:a.p+(+r.pts||0)}),{v:0,g:0,p:0});
   function dSummary(){
-    const t=dTotals();
-    $('dSpent').textContent=money(t.g);$('dPts').textContent=fmt(t.p);$('dVol').textContent=vol(t.v);
-    $('dWeeks').textContent=rows.length+(rows.length===1?' semana':' semanas');
-    $('dPer1k').textContent=(t.v?L(t.p/t.v*1000,2):'—')+' pts por $1k';
-    $('dCost').textContent=t.p?cpp(t.g/t.p):'—';
-    const be=t.p&&st.total&&st.A?t.g/(t.p/st.total*st.A):0;
-    $('dBreak').textContent=be?'por ponto · empata com FDV de '+usd(be):'por ponto';
-    $('fVol').textContent=vol(t.v);$('fSpent').textContent=money(t.g);$('fPts').textContent=fmt(t.p);
-    $('fCost').textContent=t.p?cpp(t.g/t.p):'—';$('fPer').textContent=t.v?L(t.p/t.v*1000,2):'—';
+    const x=dTotals();
+    $('dSpent').textContent=money(x.g);$('dPts').textContent=fmt(x.p);$('dVol').textContent=vol(x.v);
+    $('dWeeks').textContent=rows.length+' '+(rows.length===1?t('week'):t('weeks'));
+    $('dPer1k').textContent=(x.v?L(x.p/x.v*1000,2):'—')+' '+t('per1k');
+    $('dCost').textContent=x.p?cpp(x.g/x.p):'—';
+    const be=x.p&&st.total&&st.A?x.g/(x.p/st.total*st.A):0;
+    $('dBreak').textContent=be?t('breakEven')+usd(be):t('perPoint');
+    $('fVol').textContent=vol(x.v);$('fSpent').textContent=money(x.g);$('fPts').textContent=fmt(x.p);
+    $('fCost').textContent=x.p?cpp(x.g/x.p):'—';$('fPer').textContent=x.v?L(x.p/x.v*1000,2):'—';
     $('dEmpty').hidden=rows.length>0;
     sync0();
   }
-  // Formata enquanto digita: 1050000 -> 1.050.000 ; 12,5 -> 12,5
-  function fmtIn(t){
-    t=String(t).replace(/[^\d,]/g,'');const k=t.indexOf(',');
-    const i=(k<0?t:t.slice(0,k)).replace(/^0+(?=\d)/,''), d=k<0?null:t.slice(k+1).replace(/,/g,'').slice(0,2);
+  // Format while typing, using the current language's separators
+  function fmtIn(v){
+    v=String(v).split(GS).join('').replace(new RegExp('[^\\d'+(DS==='.'?'\\.':',')+']','g'),'');
+    const k=v.indexOf(DS);
+    const i=(k<0?v:v.slice(0,k)).replace(/^0+(?=\d)/,''), d=k<0?null:v.slice(k+1).split(DS).join('').slice(0,2);
     const int=i?nf.format(+i):(d!==null?'0':'');
-    return d===null?int:int+','+d;
+    return d===null?int:int+DS+d;
   }
-  const show=v=>v===''||v===undefined?'':fmtIn(String(v).replace('.',','));
+  const show=v=>v===''||v===undefined?'':fmtIn(String(+v).replace('.',DS));
   function rowCalc(tr,r){
     tr.querySelector('.c1').textContent=+r.pts?cpp((+r.gasto||0)/+r.pts):'—';
     tr.querySelector('.c2').textContent=+r.vol?L((+r.pts||0)/+r.vol*1000,2):'—';
@@ -505,10 +602,17 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     const tb=$('dBody');tb.replaceChildren();
     rows.forEach((r,i)=>{
       const tr=document.createElement('tr');
-      tr.innerHTML='<td class="wk"><input data-f="wk" inputmode="numeric" aria-label="Semana" style="min-width:44px;width:56px"></td><td><input data-f="par" aria-label="Par"></td><td><input data-f="vol" inputmode="decimal" aria-label="Volume"></td><td><input data-f="gasto" inputmode="decimal" aria-label="Gasto"></td><td><input data-f="pts" inputmode="decimal" aria-label="Pontos"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button" aria-label="Apagar semana '+r.wk+'">✕</button></td>';
+      tr.innerHTML='<td class="wk"><input data-f="wk" inputmode="numeric" style="min-width:44px;width:56px"></td><td><input data-f="par"></td><td><input data-f="vol" inputmode="decimal"></td><td><input data-f="gasto" inputmode="decimal"></td><td><input data-f="pts" inputmode="decimal"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button">✕</button></td>';
+      const labels={wk:t('thWeek'),par:t('thPair'),vol:t('thVol'),gasto:t('thSpent'),pts:t('thPts')};
+      tr.querySelector('.del').setAttribute('aria-label',t('delWeek')+r.wk);
       tr.querySelectorAll('input').forEach(inp=>{
-        const f=inp.dataset.f;inp.value=(f==='par'||f==='wk')?(r[f]===undefined?'':r[f]):show(r[f]);
-        inp.addEventListener('input',()=>{if(f!=='par'&&f!=='wk'){inp.value=fmtIn(inp.value)}r[f]=f==='par'?inp.value:f==='wk'?(inp.value.replace(/\D/g,'')===''?'':+inp.value.replace(/\D/g,'')):(parseFloat(inp.value.replace(/\./g,'').replace(',','.'))||'');save();rowCalc(tr,r);dSummary()});
+        const f=inp.dataset.f;inp.setAttribute('aria-label',labels[f]);
+        inp.value=(f==='par'||f==='wk')?(r[f]===undefined?'':r[f]):show(r[f]);
+        inp.addEventListener('input',()=>{
+          if(f==='par')r[f]=inp.value;
+          else if(f==='wk'){const d=inp.value.replace(/\D/g,'');r[f]=d===''?'':+d}
+          else{inp.value=fmtIn(inp.value);r[f]=dec(inp.value)||''}
+          save();rowCalc(tr,r);dSummary()});
       });
       tr.querySelector('.del').addEventListener('click',()=>{rows.splice(i,1);save();dRender()});
       rowCalc(tr,r);tb.appendChild(tr);
@@ -517,19 +621,34 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   }
   const nextWk=()=>rows.length?Math.max(...rows.map(r=>+r.wk||0))+1:1;
   function sync0(){$('dAdd0').hidden=rows.some(r=>String(r.wk)==='0')}
-  $('dAdd').addEventListener('click',()=>{const last=rows[rows.length-1];rows.push({wk:nextWk(),par:last&&String(last.wk)!=='0'?last.par:'',vol:'',gasto:'',pts:''});save();dRender();const ins=$('dBody').lastElementChild.querySelectorAll('input');ins[2].focus()});
+  $('dAdd').addEventListener('click',()=>{const last=rows[rows.length-1];rows.push({wk:nextWk(),par:last&&String(last.wk)!=='0'?last.par:'',vol:'',gasto:'',pts:''});save();dRender();$('dBody').lastElementChild.querySelectorAll('input')[2].focus()});
   $('dAdd0').addEventListener('click',()=>{rows.unshift({wk:0,par:'Season 0',vol:'',gasto:'',pts:''});save();dRender();$('dBody').firstElementChild.querySelectorAll('input')[2].focus()});
-  $('dUse').addEventListener('click',()=>{const t=dTotals();$('pts').value=nf.format(Math.round(t.p));if(!farm)$('farmSw').click();sign=-1;press($('minus'),$('plus'));$('cost').value=t.g.toFixed(2).replace('.',',');showTab('calc');calc()});
-  $('dExport').addEventListener('click',()=>{const b=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-diario.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
-  $('dImport').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const d=JSON.parse(t);if(!Array.isArray(d))throw 0;rows=d.map((r,i)=>({wk:r.wk===undefined?i+1:+r.wk||0,par:String(r.par||''),vol:+r.vol||'',gasto:+r.gasto||'',pts:+r.pts||''}));save();dRender()}).catch(()=>{$('dEmpty').hidden=false;$('dEmpty').textContent='Não foi possível importar: use um arquivo exportado por esta página.'});e.target.value=''});
-  function showTab(t){
-    const c=t==='calc';$('viewCalc').hidden=!c;$('viewDiary').hidden=c;
+  $('dUse').addEventListener('click',()=>{const x=dTotals();$('pts').value=nf.format(Math.round(x.p));if(!farm)$('farmSw').click();sign=-1;press($('minus'),$('plus'));$('cost').value=decStr(x.g);showTab('calc');calc()});
+  $('dExport').addEventListener('click',()=>{const b=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-journal.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+  $('dImport').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(x=>{const d=JSON.parse(x);if(!Array.isArray(d))throw 0;rows=d.map((r,i)=>({wk:r.wk===undefined?i+1:+r.wk||0,par:String(r.par||''),vol:+r.vol||'',gasto:+r.gasto||'',pts:+r.pts||''}));save();dRender()}).catch(()=>{$('dEmpty').hidden=false;$('dEmpty').textContent=t('dImportErr')});e.target.value=''});
+  function showTab(x){
+    const c=x==='calc';$('viewCalc').hidden=!c;$('viewDiary').hidden=c;
     $('tbCalc').setAttribute('aria-selected',c);$('tbDiary').setAttribute('aria-selected',!c);
     if(!c)dSummary();
     try{history.replaceState(null,'',c?location.pathname+location.search:'#diario')}catch(e){}
   }
   $('tbCalc').addEventListener('click',()=>showTab('calc'));
   $('tbDiary').addEventListener('click',()=>showTab('diary'));
+
+  // ---- Language switch ----
+  function setLang(l){
+    if(l===LANG)return;
+    const P=num($('pts').value),F=dec($('fdv').value),C=dec($('cost').value);
+    LANG=l;setLocale();
+    try{localStorage.setItem('txflow-lang',l)}catch(e){}
+    $('pts').value=P?nf.format(P):'';$('fdv').value=decStr(F);$('cost').value=decStr(C);
+    applyStatic();heroWord();dRender();calc();tick();
+  }
+  $('lgEn').addEventListener('click',()=>setLang('en'));
+  $('lgPt').addEventListener('click',()=>setLang('pt'));
+
+  applyStatic();
+  $('pts').value=nf.format(5000);
   dRender();
   if(location.hash==='#diario')showTab('diary');
 
@@ -537,7 +656,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   try{const u=new URLSearchParams(location.search);
     if(!u.get('p'))loadCalc();
     if(+u.get('p')>0)$('pts').value=nf.format(+u.get('p'));
-    if(+u.get('fdv')>0)$('fdv').value=String(u.get('fdv')).replace('.',',');
+    if(+u.get('fdv')>0)$('fdv').value=decStr(+u.get('fdv'));
     if(+u.get('a')>0)$('air').value=u.get('a');
   }catch(e){}
   calc();tick();setInterval(tick,1000);
