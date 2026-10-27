@@ -116,6 +116,36 @@ input[type=range]:disabled{opacity:.45}
 .sheet img{width:100%;height:auto;display:block;border:1px solid var(--line)}
 .mhead{display:flex;justify-content:space-between;align-items:center}
 .x{background:transparent;border:1px solid var(--line);color:var(--fg);width:40px;height:40px;cursor:pointer}
+.tabs{display:flex;border:1px solid var(--line);align-self:flex-start}
+.tabs button{background:transparent;border:0;color:var(--muted);font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:14px 22px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--lime);color:var(--ink)}
+.tabs button:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+#viewDiary{display:flex;flex-direction:column;gap:24px}
+.dsum{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--panel)}
+.dsum div{padding:22px 24px;border-right:1px solid var(--line);min-width:0}
+.dsum div:last-child{border-right:0}
+.dsum b{display:block;white-space:nowrap;font-weight:800;font-size:clamp(24px,2.2vw,38px);letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.dsum span{font-size:12px;color:var(--muted)}
+.dsum .hl{background:var(--lime);color:var(--ink)}
+.dsum .hl .k,.dsum .hl span{color:#1d4a12}
+@media (max-width:900px){.dsum{grid-template-columns:1fr 1fr}.dsum div{border-bottom:1px solid var(--line)}}
+@media (max-width:480px){.dsum{grid-template-columns:1fr}}
+.tw{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 16px;border-bottom:1px solid var(--line);font-size:16px;white-space:nowrap}
+tbody tr:hover{background:#0f130e}
+td input{background:transparent;border:0;border-bottom:1px solid transparent;color:var(--fg);font:inherit;width:100%;min-width:70px;padding:6px 0;outline:0}
+td input:focus{border-bottom-color:var(--lime)}
+td.calc{color:var(--lime)}
+td.wk{color:var(--muted)}
+tfoot td{font-weight:700;border-bottom:0;padding:14px 16px}
+.del{background:transparent;border:1px solid var(--line);color:var(--muted);width:32px;height:32px;cursor:pointer}
+.del:hover{border-color:var(--red);color:var(--red)}
+.dbar{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.dbar .row2{display:flex;gap:12px;flex-wrap:wrap}
+.btn.sm{padding:12px 16px;font-size:12px}
+.empty{padding:40px 24px;text-align:center;color:var(--muted)}
 footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 </style>
 </head><body>
@@ -137,6 +167,12 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     </div>
   </div>
 
+  <div class="tabs" role="tablist" aria-label="Seções">
+    <button type="button" role="tab" id="tbCalc" aria-selected="true" aria-controls="viewCalc">Calculadora</button>
+    <button type="button" role="tab" id="tbDiary" aria-selected="false" aria-controls="viewDiary">Meu diário</button>
+  </div>
+
+  <div id="viewCalc" role="tabpanel" aria-labelledby="tbCalc">
   <div class="grid">
     <section class="box" aria-label="Calculadora">
       <div class="sect">
@@ -228,6 +264,34 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
       </div>
     </aside>
   </div>
+  </div>
+
+  <section id="viewDiary" role="tabpanel" aria-labelledby="tbDiary" hidden>
+    <div class="dsum">
+      <div><small class="k">Total gasto</small><b id="dSpent">$0,00</b><span>taxas e perdas</span></div>
+      <div><small class="k">Total pontos</small><b id="dPts">0</b><span id="dWeeks">0 semanas</span></div>
+      <div><small class="k">Total volume</small><b id="dVol">$0</b><span id="dPer1k">— pts por $1k</span></div>
+      <div class="hl"><small class="k">Custo médio</small><b id="dCost">—</b><span id="dBreak">por ponto</span></div>
+    </div>
+    <div class="dbar">
+      <button class="btn solid" id="dAdd" type="button"><span>+ Adicionar semana</span></button>
+      <div class="row2">
+        <button class="btn sm" id="dUse" type="button">Usar na calculadora</button>
+        <button class="btn sm" id="dExport" type="button">Exportar</button>
+        <label class="btn sm" for="dImport" style="cursor:pointer">Importar</label>
+        <input type="file" id="dImport" accept=".json,application/json" hidden>
+      </div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Semana</th><th>Par</th><th>Volume (US$)</th><th>Gasto (US$)</th><th>Pontos</th><th>Custo / ponto</th><th>Pts / $1k</th><th></th></tr></thead>
+        <tbody id="dBody"></tbody>
+        <tfoot><tr><td>Total</td><td></td><td id="fVol"></td><td id="fSpent"></td><td id="fPts"></td><td id="fCost" class="calc"></td><td id="fPer" class="calc"></td><td></td></tr></tfoot>
+      </table>
+      <div class="empty" id="dEmpty">Nenhuma semana anotada. Clique em "+ Adicionar semana" e preencha volume, gasto e pontos.</div>
+    </div>
+    <p class="hint">Seus dados ficam salvos só neste navegador. Use "Exportar" para guardar uma cópia ou levar para outro aparelho.</p>
+  </section>
 
   <div class="modal" id="modal" hidden>
     <div class="sheet box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
@@ -374,6 +438,60 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   modal.addEventListener('click',e=>{if(e.target===modal)close()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
   $('dl').addEventListener('click',()=>{cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-airdrop.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},'image/png')});
+
+  // ---- Meu diário (salvo no navegador) ----
+  const KEY='txflow-diario-v1';
+  let rows=[];
+  try{rows=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(rows))rows=[]}catch(e){rows=[]}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(rows))}catch(e){}};
+  const money=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const cpp=n=>'$'+n.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3});
+  const vol=n=>'$'+fmt(n);
+  const dTotals=()=>rows.reduce((a,r)=>({v:a.v+(+r.vol||0),g:a.g+(+r.gasto||0),p:a.p+(+r.pts||0)}),{v:0,g:0,p:0});
+  function dSummary(){
+    const t=dTotals();
+    $('dSpent').textContent=money(t.g);$('dPts').textContent=fmt(t.p);$('dVol').textContent=vol(t.v);
+    $('dWeeks').textContent=rows.length+(rows.length===1?' semana':' semanas');
+    $('dPer1k').textContent=(t.v?L(t.p/t.v*1000,2):'—')+' pts por $1k';
+    $('dCost').textContent=t.p?cpp(t.g/t.p):'—';
+    const be=t.p&&st.total&&st.A?t.g/(t.p/st.total*st.A):0;
+    $('dBreak').textContent=be?'por ponto · empata com FDV de '+usd(be):'por ponto';
+    $('fVol').textContent=vol(t.v);$('fSpent').textContent=money(t.g);$('fPts').textContent=fmt(t.p);
+    $('fCost').textContent=t.p?cpp(t.g/t.p):'—';$('fPer').textContent=t.v?L(t.p/t.v*1000,2):'—';
+    $('dEmpty').hidden=rows.length>0;
+  }
+  function rowCalc(tr,r){
+    tr.querySelector('.c1').textContent=+r.pts?cpp((+r.gasto||0)/+r.pts):'—';
+    tr.querySelector('.c2').textContent=+r.vol?L((+r.pts||0)/+r.vol*1000,2):'—';
+  }
+  function dRender(){
+    const tb=$('dBody');tb.replaceChildren();
+    rows.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML='<td class="wk">'+(i+1)+'</td><td><input data-f="par" aria-label="Par"></td><td><input data-f="vol" inputmode="decimal" aria-label="Volume"></td><td><input data-f="gasto" inputmode="decimal" aria-label="Gasto"></td><td><input data-f="pts" inputmode="decimal" aria-label="Pontos"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button" aria-label="Apagar semana '+(i+1)+'">✕</button></td>';
+      tr.querySelectorAll('input').forEach(inp=>{
+        const f=inp.dataset.f;inp.value=r[f]===undefined?'':r[f];
+        inp.addEventListener('input',()=>{r[f]=f==='par'?inp.value:(dec(inp.value)||'');save();rowCalc(tr,r);dSummary()});
+      });
+      tr.querySelector('.del').addEventListener('click',()=>{rows.splice(i,1);save();dRender()});
+      rowCalc(tr,r);tb.appendChild(tr);
+    });
+    dSummary();
+  }
+  $('dAdd').addEventListener('click',()=>{const last=rows[rows.length-1];rows.push({par:last?last.par:'',vol:'',gasto:'',pts:''});save();dRender();const ins=$('dBody').lastElementChild.querySelectorAll('input');(ins[1]||ins[0]).focus()});
+  $('dUse').addEventListener('click',()=>{const t=dTotals();$('pts').value=nf.format(Math.round(t.p));if(!farm)$('farmSw').click();sign=-1;press($('minus'),$('plus'));$('cost').value=t.g.toFixed(2).replace('.',',');showTab('calc');calc()});
+  $('dExport').addEventListener('click',()=>{const b=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='txflow-diario.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+  $('dImport').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const d=JSON.parse(t);if(!Array.isArray(d))throw 0;rows=d.map(r=>({par:String(r.par||''),vol:+r.vol||'',gasto:+r.gasto||'',pts:+r.pts||''}));save();dRender()}).catch(()=>{$('dEmpty').hidden=false;$('dEmpty').textContent='Não foi possível importar: use um arquivo exportado por esta página.'});e.target.value=''});
+  function showTab(t){
+    const c=t==='calc';$('viewCalc').hidden=!c;$('viewDiary').hidden=c;
+    $('tbCalc').setAttribute('aria-selected',c);$('tbDiary').setAttribute('aria-selected',!c);
+    if(!c)dSummary();
+    try{history.replaceState(null,'',c?location.pathname+location.search:'#diario')}catch(e){}
+  }
+  $('tbCalc').addEventListener('click',()=>showTab('calc'));
+  $('tbDiary').addEventListener('click',()=>showTab('diary'));
+  dRender();
+  if(location.hash==='#diario')showTab('diary');
 
   try{const u=new URLSearchParams(location.search);
     if(+u.get('p')>0)$('pts').value=nf.format(+u.get('p'));
