@@ -3,15 +3,17 @@ export const config = { runtime: 'edge' };
 
 export default function handler(req) {
   const url = new URL(req.url);
-  const v = Math.max(0, Math.round(Number(url.searchParams.get('v')) || 0));
-  const f = Math.max(0, Math.round(Number(url.searchParams.get('f')) || 0));
-  const qs = `v=${v}` + (f ? `&f=${f}` : '');
-  const img = `${url.origin}/api/og?${qs}`;
-  const dest = `${url.origin}/?${qs}`;
+  const q = new URLSearchParams();
+  for (const k of ['p', 'fdv', 'a', 't']) {
+    const v = url.searchParams.get(k);
+    if (v && /^[\d.]+$/.test(v)) q.set(k, v);
+  }
+  const img = `${url.origin}/api/og?${q}`;
+  const dest = `${url.origin}/?${q}`;
   const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
-<title>Calculadora de Pontos TxFlow · Season 0</title>
-<meta property="og:title" content="Calculadora de Pontos TxFlow · Season 0">
-<meta property="og:description" content="Estimativa não oficial. Calcule os seus pontos.">
+<title>Calculadora de Airdrop TxFlow</title>
+<meta property="og:title" content="Calculadora de Airdrop TxFlow">
+<meta property="og:description" content="Quanto seus pontos da TxFlow podem valer. Não oficial.">
 <meta property="og:image" content="${img}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="675">
 <meta name="twitter:card" content="summary_large_image">

@@ -2,8 +2,8 @@
 import { ImageResponse } from '@vercel/og';
 export const config = { runtime: 'edge' };
 
-const POOL = 20e6, PLATFORM = 8.705e9;
-const LIME = '#7dff6b', BG = '#050605', INK = '#071003', MUTED = '#88927f', LINE = '#1f281d';
+const SUPPLY = 1e9, DEFAULT_TOTAL = 47345544;
+const LIME = '#7dff6b', BG = '#050605', INK = '#071003', MUTED = '#88927f', LINE = '#1f281d', FG = '#f2f5ef';
 
 async function font(family, weight) {
   const css = await (await fetch(`https://fonts.googleapis.com/css2?family=${family}:wght@${weight}`)).text();
@@ -11,53 +11,45 @@ async function font(family, weight) {
   return (await fetch(src[1])).arrayBuffer();
 }
 const h = (type, style, children) => ({ type, props: { style, children } });
-const nf = new Intl.NumberFormat('pt-BR');
+const L = (n, d) => n.toLocaleString('pt-BR', { maximumFractionDigits: d });
+const usd = n => n >= 1e9 ? '$' + L(n / 1e9, 2) + ' bi' : n >= 1e6 ? '$' + L(n / 1e6, 2) + ' mi' : '$' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const price = n => '$' + n.toLocaleString('pt-BR', { minimumFractionDigits: n < 1 ? 4 : 2, maximumFractionDigits: n < 1 ? 4 : 2 });
 
 export default async function handler(req) {
   const q = new URL(req.url).searchParams;
-  const v = Math.max(0, Math.round(Number(q.get('v')) || 0));
-  const f = Math.max(0, Number(q.get('f')) || 0);
-  const adj = v && f ? Math.max(0.85, Math.min(1.15, 1 + (f / v / 0.0003 - 1) * 0.15)) : 1;
-  const share = Math.min(1, v / PLATFORM), pts = share * POOL * adj;
-  const [archivo, fell, mono] = await Promise.all([
-    font('Archivo', 800), font('IM+Fell+English', 400), font('JetBrains+Mono', 700),
-  ]);
+  const P = Math.max(0, Math.round(Number(q.get('p')) || 0));
+  const F = Math.max(0, Number(q.get('fdv')) || 100) * 1e6;
+  const A = Math.min(100, Math.max(1, Number(q.get('a')) || 20)) / 100;
+  const T = Math.max(1, Number(q.get('t')) || DEFAULT_TOTAL);
+  const share = P / T, value = share * A * F, perPt = A * F / T;
+  const [archivo, mono] = await Promise.all([font('Archivo', 800), font('JetBrains+Mono', 700)]);
   const label = (t, c = MUTED) => h('div', { fontFamily: 'Mono', fontSize: 18, color: c, letterSpacing: 2 }, t);
-  const stat = (k, val) => h('div', { display: 'flex', flexDirection: 'column', gap: 6, width: 340 }, [label(k), h('div', { fontFamily: 'Mono', fontSize: 30, color: '#f2f5ef' }, val)]);
+  const stat = (k, v) => h('div', { display: 'flex', flexDirection: 'column', gap: 6, width: 262 }, [label(k), h('div', { fontFamily: 'Mono', fontSize: 30, color: FG }, v)]);
 
   const tree = h('div', { width: 1200, height: 675, background: BG, display: 'flex', padding: 40 }, [
-    h('div', { flex: 1, border: `2px solid ${LINE}`, display: 'flex', flexDirection: 'column', padding: 38, gap: 26 }, [
-      h('div', { display: 'flex', justifyContent: 'space-between' }, [label('SEASON 0 · CALCULADORA DE PONTOS'), label('@DJA_Chain', LIME)]),
-      h('div', { display: 'flex', gap: 20, height: 330 }, [
-        h('div', { width: 700, background: LIME, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '30px 32px' }, [
-          label('EU DEVO RECEBER · CENÁRIO BASE', '#1d4a12'),
-          h('div', { fontFamily: 'Archivo', fontSize: pts >= 1e6 ? 110 : 150, color: INK, lineHeight: 1 }, nf.format(Math.round(pts))),
-          h('div', { fontFamily: 'Fell', fontSize: 64, color: INK, lineHeight: 1 }, 'pontos'),
+    h('div', { flex: 1, border: `2px solid ${LINE}`, display: 'flex', flexDirection: 'column', padding: 38, gap: 28 }, [
+      h('div', { display: 'flex', justifyContent: 'space-between' }, [label('TXFLOW · CALCULADORA DE AIRDROP'), label('@DJA_Chain', LIME)]),
+      h('div', { background: LIME, height: 250, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '30px 32px' }, [
+        h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }, [
+          label('AIRDROP ESTIMADO', '#1d4a12'),
+          h('div', { fontFamily: 'Archivo', fontSize: value >= 1e6 ? 110 : 140, color: INK, lineHeight: 1 }, usd(value)),
         ]),
-        h('div', { flex: 1, border: `2px solid ${LIME}`, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '24px 22px' }, [
-          h('div', { fontFamily: 'Fell', fontSize: 74, color: LIME, lineHeight: 1 }, 'Season'),
-          h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }, [
-            label('NÃO OFICIAL'),
-            h('div', { fontFamily: 'Fell', fontSize: 260, color: LIME, lineHeight: 0.75 }, '0'),
-          ]),
+        h('div', { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }, [
+          h('div', { fontFamily: 'Mono', fontSize: 34, color: INK }, P.toLocaleString('pt-BR')),
+          h('div', { fontFamily: 'Mono', fontSize: 18, color: '#1d4a12', letterSpacing: 2 }, 'PONTOS'),
         ]),
       ]),
       h('div', { display: 'flex' }, [
-        stat('VOLUME', '$' + nf.format(v)),
-        stat('PESSIMISTA (10 MI)', nf.format(Math.round(share * adj * 10e6)) + ' pts'),
-        stat('OTIMISTA (30 MI)', nf.format(Math.round(share * adj * 30e6)) + ' pts'),
+        stat('FDV', usd(F)), stat('AIRDROP', Math.round(A * 100) + '%'), stat('1 PONTO', price(perPt)), stat('FATIA', L(share * 100, 4) + '%'),
       ]),
-      label('Estimativa não oficial · convite: app.txflow.com/r/EE1EK0IACD'),
+      label(`Pontos distribuídos: ${L(T / 1e6, 2)} mi · supply 1 bi · não oficial`),
+      label('Convite: app.txflow.com/r/EE1EK0IACD'),
     ]),
   ]);
 
   return new ImageResponse(tree, {
     width: 1200, height: 675,
-    fonts: [
-      { name: 'Archivo', data: archivo, weight: 800 },
-      { name: 'Fell', data: fell, weight: 400 },
-      { name: 'Mono', data: mono, weight: 700 },
-    ],
+    fonts: [{ name: 'Archivo', data: archivo, weight: 800 }, { name: 'Mono', data: mono, weight: 700 }],
     headers: { 'cache-control': 'public, max-age=86400' },
   });
 }
