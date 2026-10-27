@@ -488,6 +488,14 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     $('dEmpty').hidden=rows.length>0;
     sync0();
   }
+  // Formata enquanto digita: 1050000 -> 1.050.000 ; 12,5 -> 12,5
+  function fmtIn(t){
+    t=String(t).replace(/[^\d,]/g,'');const k=t.indexOf(',');
+    const i=(k<0?t:t.slice(0,k)).replace(/^0+(?=\d)/,''), d=k<0?null:t.slice(k+1).replace(/,/g,'').slice(0,2);
+    const int=i?nf.format(+i):(d!==null?'0':'');
+    return d===null?int:int+','+d;
+  }
+  const show=v=>v===''||v===undefined?'':fmtIn(String(v).replace('.',','));
   function rowCalc(tr,r){
     tr.querySelector('.c1').textContent=+r.pts?cpp((+r.gasto||0)/+r.pts):'—';
     tr.querySelector('.c2').textContent=+r.vol?L((+r.pts||0)/+r.vol*1000,2):'—';
@@ -498,8 +506,8 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
       const tr=document.createElement('tr');
       tr.innerHTML='<td class="wk"><input data-f="wk" inputmode="numeric" aria-label="Semana" style="min-width:44px;width:56px"></td><td><input data-f="par" aria-label="Par"></td><td><input data-f="vol" inputmode="decimal" aria-label="Volume"></td><td><input data-f="gasto" inputmode="decimal" aria-label="Gasto"></td><td><input data-f="pts" inputmode="decimal" aria-label="Pontos"></td><td class="calc c1"></td><td class="calc c2"></td><td><button class="del" type="button" aria-label="Apagar semana '+r.wk+'">✕</button></td>';
       tr.querySelectorAll('input').forEach(inp=>{
-        const f=inp.dataset.f;inp.value=r[f]===undefined?'':r[f];
-        inp.addEventListener('input',()=>{r[f]=f==='par'?inp.value:f==='wk'?(inp.value.replace(/\D/g,'')===''?'':+inp.value.replace(/\D/g,'')):(dec(inp.value)||'');save();rowCalc(tr,r);dSummary()});
+        const f=inp.dataset.f;inp.value=(f==='par'||f==='wk')?(r[f]===undefined?'':r[f]):show(r[f]);
+        inp.addEventListener('input',()=>{if(f!=='par'&&f!=='wk'){inp.value=fmtIn(inp.value)}r[f]=f==='par'?inp.value:f==='wk'?(inp.value.replace(/\D/g,'')===''?'':+inp.value.replace(/\D/g,'')):(parseFloat(inp.value.replace(/\./g,'').replace(',','.'))||'');save();rowCalc(tr,r);dSummary()});
       });
       tr.querySelector('.del').addEventListener('click',()=>{rows.splice(i,1);save();dRender()});
       rowCalc(tr,r);tb.appendChild(tr);
