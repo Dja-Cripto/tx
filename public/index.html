@@ -14,7 +14,7 @@
 :root{
   color-scheme:dark;
   --bg:#050605;--panel:#0b0d0b;--line:#1f281d;--fg:#f2f5ef;--muted:#88927f;
-  --lime:#7dff6b;--lime-dim:#1c2913;--ink:#071003;
+  --lime:#7dff6b;--lime-dim:#1c2913;--ink:#071003;--red:#ff5a4e;--red-ink:#2a0503;
   --sans:"Archivo",ui-sans-serif,system-ui,sans-serif;
   --serif:"IM Fell English",Georgia,"Times New Roman",serif;
   --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
@@ -89,6 +89,9 @@ input[type=range]:disabled{opacity:.45}
 .res{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:20px;min-width:0}
 .hero{background:var(--lime);color:var(--ink);padding:32px 28px;display:flex;flex-direction:column;gap:6px}
 .hero .k{color:#1d4a12}
+.hero.neg{background:var(--red);color:var(--red-ink)}
+.hero.neg .k{color:#5c0d07}
+.hero.pos-farm .net,.hero.neg .net{font-size:16px}
 .usd{font-weight:800;font-size:clamp(56px,7vw,112px);letter-spacing:-.045em;line-height:.95;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .net{font-family:var(--mono);font-size:15px}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr)}
@@ -196,7 +199,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     <aside class="res">
       <div class="box">
         <div class="hero" aria-live="polite">
-          <span class="k">Airdrop estimado</span>
+          <span class="k" id="heroK">Airdrop estimado</span>
           <div class="usd" id="usd">—</div>
           <div class="net" id="net"></div>
         </div>
@@ -284,8 +287,11 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     $('s1Txt').textContent=mi(s1);
     $('s1Sub').textContent=mode==='date'?'Season 1 · até hoje':'Season 1 · estimada';
     $('airTxt').textContent=Math.round(A*100)+'%';
-    $('usd').textContent=usd(value);
-    $('net').textContent=farm?(C<0?'Depois do custo de farm: ':'Somando o ganho de farm: ')+usd(value+C):'';
+    const net=value+C, hero=document.querySelector('.hero');
+    hero.classList.toggle('neg',farm&&net<0);
+    $('heroK').textContent=farm?(net<0?'Prejuízo estimado':'Lucro estimado'):'Airdrop estimado';
+    $('usd').textContent=farm?(net<0?'−':'+')+usd(Math.abs(net)):usd(value);
+    $('net').textContent=farm?'Airdrop '+usd(value)+(C<0?' − custo de farm ':' + ganho de farm ')+usd(Math.abs(C)):'';
     $('tPts').textContent=fmt(P);
     $('tShare').textContent=L(share*100,4)+'%';
     $('tTok').textContent=tokens>=1e3?L(tokens/1e3,2)+' mil':fmt(tokens);
