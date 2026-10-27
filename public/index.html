@@ -366,9 +366,31 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
     $('tPrice').textContent=price(px);
     $('tPoint').textContent=price(perPt);
     tweetHref();
+    saveCalc();
     clearTimeout(timer);timer=setTimeout(draw,150);
   }
 
+  const CKEY='txflow-calc-v1';
+  let restoring=false;
+  function saveCalc(){
+    if(restoring)return;
+    try{localStorage.setItem(CKEY,JSON.stringify({pts:$('pts').value,fdv:$('fdv').value,air:$('air').value,s1:$('s1Range').value,mode,s2,farm,sign,cost:$('cost').value}))}catch(e){}
+  }
+  function loadCalc(){
+    let d=null;try{d=JSON.parse(localStorage.getItem(CKEY)||'null')}catch(e){}
+    if(!d)return;
+    restoring=true;
+    if(d.pts)$('pts').value=d.pts;
+    if(d.fdv)$('fdv').value=d.fdv;
+    if(d.air)$('air').value=d.air;
+    if(d.s1)$('s1Range').value=d.s1;
+    if(d.cost)$('cost').value=d.cost;
+    if(d.mode==='date')$('mDate').click();
+    if(d.s2)$('s2').click();
+    if(d.sign===1)$('plus').click();
+    if(d.farm)$('farmSw').click();
+    restoring=false;
+  }
   function tick(){
     const t=nextDrop();let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const d=Math.floor(s/86400);s%=86400;const p=n=>String(n).padStart(2,'0');
@@ -501,12 +523,13 @@ footer{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-co
   dRender();
   if(location.hash==='#diario')showTab('diary');
 
+  $('s1Range').max=(S1/1e6).toFixed(1);$('s1Range').value=(S1/1e6).toFixed(1);
   try{const u=new URLSearchParams(location.search);
+    if(!u.get('p'))loadCalc();
     if(+u.get('p')>0)$('pts').value=nf.format(+u.get('p'));
     if(+u.get('fdv')>0)$('fdv').value=String(u.get('fdv')).replace('.',',');
     if(+u.get('a')>0)$('air').value=u.get('a');
   }catch(e){}
-  $('s1Range').max=(S1/1e6).toFixed(1);$('s1Range').value=(S1/1e6).toFixed(1);
   calc();tick();setInterval(tick,1000);
   (document.fonts&&document.fonts.load?document.fonts.load('40px "IM Fell English"').then(()=>document.fonts.ready):Promise.resolve()).catch(()=>{}).then(()=>{heroWord();draw()});
 })();
